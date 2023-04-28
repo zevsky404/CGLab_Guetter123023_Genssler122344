@@ -10,6 +10,8 @@ private:
     Node root_;
 
 public:
+    SceneGraph() = default;
+
     const std::string &getName() const;
     void setName(const std::string &name);
 
@@ -21,5 +23,6 @@ public:
     // void printGraph(bool show_transformation = false);
 };
 
+SceneGraph setupSolarSystem();
 
 #endif //OPENGL_FRAMEWORK_SCENE_GRAPH_HPP

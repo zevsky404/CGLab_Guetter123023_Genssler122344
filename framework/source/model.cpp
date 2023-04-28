@@ -49,6 +49,6 @@ model::model(std::vector<GLfloat> const& databuff, attrib_flag_t contained_attri
       component_num += supported_attribute.components;
     }
   }
-  // set number of vertice sin buffer
+  // set number of vertices in buffer
   vertex_num = data.size() / component_num;
 }

@@ -2,15 +2,25 @@
 #define OPENGL_FRAMEWORK_CAMERA_NODE_HPP
 
 #include <glm/glm.hpp>
+#include <node.hpp>
 
-class CameraNode {
+class CameraNode : public Node{
 private:
-    bool isPerspective_;
-    bool isEnabled_;
+    bool isPerspective_ = false;
+    bool isEnabled_ = false;
     glm::mat4 projectionMatrix_;
 
 public:
-    bool isPerspective1() const;
+    CameraNode() = default;
+
+    explicit CameraNode(std::string name):
+    Node::Node(std::move(name)),
+    isPerspective_{},
+    isEnabled_{},
+    projectionMatrix_{}
+    {}
+
+    bool isPerspective() const;
     void setIsPerspective(bool isPerspective);
 
     bool isEnabled1() const;

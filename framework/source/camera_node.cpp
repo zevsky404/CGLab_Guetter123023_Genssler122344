@@ -1,10 +1,6 @@
-//
-// Created by neo on 27.04.23.
-//
-
 #include "camera_node.hpp"
 
-bool CameraNode::isPerspective1() const {
+bool CameraNode::isPerspective() const {
     return isPerspective_;
 }
 
