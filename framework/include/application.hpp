@@ -28,7 +28,7 @@ class Application {
   // recompile shaders form source files
   void reloadShaders(bool throwing);
 
-// functiosn which are implemented in derived classes
+// functions which are implemented in derived classes
   // update uniform locations and values
   inline virtual void uploadUniforms() {};
   // react to key input

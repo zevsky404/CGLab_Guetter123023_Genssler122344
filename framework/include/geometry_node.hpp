@@ -2,8 +2,9 @@
 #define OPENGL_FRAMEWORK_GEOMETRY_NODE_HPP
 
 #include "model.hpp"
+#include <node.hpp>
 
-class GeometryNode {
+class GeometryNode : public Node {
 private:
     model geometry_;
 

@@ -3,10 +3,15 @@
 #include <iterator>
 #include <ostream>
 
-// Getters and Setters
+// Getters and setters, class utility
 # pragma region
 const std::vector<Node> &Node::getChildren() const {
     return children_;
+}
+
+const Node Node::getChild(const std::string &name) const {
+    auto foundChild = std::find_if(children_.begin(), children_.end(), [name] (Node const& child) {return name == child.name_;});
+    return *foundChild;
 }
 
 const std::string &Node::getName() const {
@@ -53,11 +58,11 @@ void Node::setWorldTransform(const glm::mat4 &worldTransform) {
     world_transform_ = worldTransform;
 }
 
-void Node::addChildren(const Node &child) {
+void Node::addChild(const Node &child) {
     children_.push_back(child);
 }
 
-Node Node::removeChildren(const std::string &child_name) {
+Node Node::removeChild(const std::string &child_name) {
     auto found_child = std::remove_if(children_.begin(), children_.end(), [child_name] (Node const& child) {return child_name == child.name_;});
     return *found_child;
 }
@@ -72,7 +77,19 @@ std::ostream &operator<<(std::ostream &os, const Node &node) {
         os << child_node.name_ << std::endl;
     }
 }
-
-
 #pragma endregion
+
+// methods relevant for rendering
+
+void Node::renderChildren() const {
+    for (auto const& child : children_) {
+        child.renderNode();
+    }
+}
+
+void Node::renderNode() const {
+
+}
+
+
 
