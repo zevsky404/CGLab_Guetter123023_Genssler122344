@@ -58,7 +58,8 @@ void Node::setWorldTransform(const glm::mat4 &worldTransform) {
     world_transform_ = worldTransform;
 }
 
-void Node::addChild(const Node &child) {
+void Node::addChild(Node& child) {
+    child.depth_ = getDepth() + 1;
     children_.push_back(child);
 }
 
@@ -77,19 +78,15 @@ std::ostream &operator<<(std::ostream &os, const Node &node) {
         os << child_node.name_ << std::endl;
     }
 }
-#pragma endregion
 
-// methods relevant for rendering
-
-void Node::renderChildren() const {
-    for (auto const& child : children_) {
-        child.renderNode();
+void Node::applyFunction(const std::function<void(Node)> &functionObject) {
+    for (auto child : children_) {
+        functionObject(child);
+        child.applyFunction(functionObject);
     }
 }
+#pragma endregion
 
-void Node::renderNode() const {
-
-}
 
 
 

@@ -4,9 +4,11 @@
 #include <utility>
 #include <vector>
 #include <iostream>
+#include <functional>
 #include <glm/glm.hpp>
 
 class Node {
+
 private:
     // Node parent_;
     std::vector<Node> children_;
@@ -48,14 +50,18 @@ public:
     const glm::mat4 &getWorldTransform() const;
     void setWorldTransform(const glm::mat4 &worldTransform);
 
-    void addChild(Node const& child);
+    void addChild(Node& child);
     Node removeChild(std::string const& child_name);
 
     friend std::ostream& operator<<(std::ostream& os, Node const& node);
 
-    void renderNode() const;
+    // void renderNode() const;
 
-    void renderChildren() const;
+    // void renderChildren() const;
+
+    void applyFunction(std::function<void(Node)> const& functionObject);
 };
+
+typedef std::function<void(Node)> VoidFunctionObject;
 
 #endif //OPENGL_FRAMEWORK_NODE_HPP

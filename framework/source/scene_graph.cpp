@@ -26,12 +26,11 @@ std::ostream &operator<<(std::ostream &os, const SceneGraph &graph) {
     return os;
 }
 
-/*void Node::printGraph(bool show_transformations) {
-    std::cout << *this << std::endl;
-    if (show_transformations) {
-        std::cout << local_transform_
-    }
-}*/
+
+void SceneGraph::applyFunction(VoidFunctionObject const& functionObject) {
+    functionObject(root_);
+
+}
 
 std::vector<std::string> PLANETS {
     "Mercury",
@@ -60,7 +59,8 @@ SceneGraph setupSolarSystem() {
     }
 
     Node earth_node = root.getChild("Earth");
-    earth_node.addChild(Node("Moon"));
+    Node moon_node = Node("Moon");
+    earth_node.addChild(moon_node);
 
     return sceneGraph;
 }

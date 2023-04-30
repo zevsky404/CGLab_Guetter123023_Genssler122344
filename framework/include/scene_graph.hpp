@@ -21,6 +21,8 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const SceneGraph &graph);
 
     // void printGraph(bool show_transformation = false);
+
+    void applyFunction(VoidFunctionObject const& functionObject);
 };
 
 SceneGraph setupSolarSystem();
