@@ -7,10 +7,12 @@
 class GeometryNode : public Node {
 private:
     model geometry_;
+    std::string geometry_path_;
+    GeometryNode() = default;
+
 
 public:
     const model &getGeometry() const;
-
     void setGeometry(const model &geometry);
 };
 

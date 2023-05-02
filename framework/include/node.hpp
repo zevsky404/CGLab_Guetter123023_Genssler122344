@@ -6,12 +6,13 @@
 #include <iostream>
 #include <functional>
 #include <glm/glm.hpp>
+#include <memory>
 
 class Node {
 
 private:
-    // Node parent_;
-    std::vector<Node> children_;
+    std::shared_ptr<Node> parent_;
+    std::vector<std::shared_ptr<Node>> children_;
     std::string name_;
     std::string path_;
     int depth_ = 0;
@@ -21,7 +22,8 @@ private:
 public:
     Node() = default;
 
-    explicit Node(std::string name):
+    explicit Node(std::shared_ptr<Node> parent, std::string const& name):
+    parent_{std::move(parent)},
     children_{},
     name_{std::move(name)},
     path_{},
@@ -30,10 +32,13 @@ public:
     world_transform_{}
     {};
 
-    const std::vector<Node>& getChildren() const;
-    void setChildren(const std::vector<Node> &children);
+    const std::shared_ptr<Node> getParent() const;
+    void setParent(std::shared_ptr<Node> node);
 
-    const Node getChild(std::string const& name) const;
+    const std::vector<std::shared_ptr<Node>>& getChildren() const;
+    void setChildren(const std::vector<std::shared_ptr<Node>> &children);
+
+    const std::shared_ptr<Node> getChild(std::string const& name) const;
 
     const std::string& getName() const;
     void setName(const std::string &name);
@@ -50,8 +55,8 @@ public:
     const glm::mat4 &getWorldTransform() const;
     void setWorldTransform(const glm::mat4 &worldTransform);
 
-    void addChild(Node& child);
-    Node removeChild(std::string const& child_name);
+    void addChild(std::shared_ptr<Node> node);
+    std::shared_ptr<Node> removeChild(std::string const& child_name);
 
     friend std::ostream& operator<<(std::ostream& os, Node const& node);
 
@@ -60,6 +65,7 @@ public:
     // void renderChildren() const;
 
     void applyFunction(std::function<void(Node)> const& functionObject);
+    ~Node();
 };
 
 typedef std::function<void(Node)> VoidFunctionObject;
