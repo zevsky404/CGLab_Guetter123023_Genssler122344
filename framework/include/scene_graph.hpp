@@ -22,7 +22,7 @@ public:
 
     // void printGraph(bool show_transformation = false);
 
-    void applyFunction(VoidFunctionObject const& functionObject);
+    void applyFunction(VoidFunctionObject const& functionObject) const;
     ~SceneGraph();
 };
 

@@ -7,6 +7,15 @@
 #include <functional>
 #include <glm/glm.hpp>
 #include <memory>
+#include "structs.hpp"
+
+//dont load gl bindings from glfw
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Node {
 
@@ -60,14 +69,14 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, Node const& node);
 
-    // void renderNode() const;
+    virtual void renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform);
 
     // void renderChildren() const;
 
     void applyFunction(std::function<void(Node)> const& functionObject);
-    ~Node();
+    virtual ~Node();
 };
 
-typedef std::function<void(Node)> VoidFunctionObject;
+typedef std::function<void(std::shared_ptr<Node>)> VoidFunctionObject;
 
 #endif //OPENGL_FRAMEWORK_NODE_HPP
