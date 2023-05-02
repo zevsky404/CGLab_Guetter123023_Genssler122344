@@ -17,7 +17,8 @@ public:
 
     GeometryNode(std::shared_ptr<Node> parent, std::string const& name, model_object geometry):
         Node::Node(std::move(parent), name),
-        geometry_{geometry} {};
+        geometry_{geometry} {
+    };
 
     const model_object &getGeometry() const;
     void setGeometry(const model_object &geometry);

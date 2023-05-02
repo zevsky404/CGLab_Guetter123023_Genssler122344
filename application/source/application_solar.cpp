@@ -24,8 +24,8 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,sceneGraph{}
 {
   initializeGeometry();
-  sceneGraph = setupSolarSystem();
   initializeShaderPrograms();
+  sceneGraph = setupSolarSystem(planet_object);
 }
 
 ApplicationSolar::~ApplicationSolar() {

@@ -41,18 +41,18 @@ void SceneGraph::applyFunction(VoidFunctionObject const& functionObject) const {
 SceneGraph::~SceneGraph() = default;
 
 
-SceneGraph setupSolarSystem() {
+SceneGraph setupSolarSystem(model_object const& planet_model) {
     SceneGraph sceneGraph{};
 
     std::shared_ptr<Node> root = std::make_shared<Node>(Node{nullptr, "root"});
     sceneGraph.setRoot(root);
 
-    std::shared_ptr<CameraNode> camera = std::make_shared<CameraNode>(root,"camera");
-    root->addChild(camera);
+    /*std::shared_ptr<CameraNode> camera = std::make_shared<CameraNode>(root,"camera");
+    root->addChild(camera);*/
 
     for (auto const& planet_name : PLANET_NAMES) {
         auto planet_node = std::make_shared<Node>(root, planet_name + "-Holder");
-        auto geometry_node = std::make_shared<GeometryNode>(planet_node, planet_name + "-Geometry");
+        auto geometry_node = std::make_shared<GeometryNode>(planet_node, planet_name + "-Geometry", planet_model);
         planet_node->addChild(geometry_node);
         //planet_node->setLocalTransform(glm::translate(glm::mat4(1), glm::f32vec3(0.0f, 0.0f, -1.0)));
         root->addChild(planet_node);
@@ -61,7 +61,7 @@ SceneGraph setupSolarSystem() {
     std::shared_ptr<Node> earth_node = root->getChild("Earth-Holder");
     // earth_node->setLocalTransform(glm::translate(glm::mat4(1), glm::f32vec3(0.0f, 0.0f, -1.0)));
     std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Moon-Holder");
-    std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Moon-Geometry");
+    std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Moon-Geometry", planet_model);
     moon_node->addChild(moon_geometry);
     earth_node->addChild(moon_node);
 

@@ -101,7 +101,6 @@ std::ostream &operator<<(std::ostream &os, const Node &node) {
 }
 
 void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) {
-
     glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f}) * local_transform_;
     // model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -3.0f});
 

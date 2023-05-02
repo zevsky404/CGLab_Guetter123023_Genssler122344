@@ -26,6 +26,6 @@ public:
     ~SceneGraph();
 };
 
-SceneGraph setupSolarSystem();
+SceneGraph setupSolarSystem(model_object const& planet_model);
 
 #endif //OPENGL_FRAMEWORK_SCENE_GRAPH_HPP
