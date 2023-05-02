@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <glm/gtc/matrix_transform.hpp>
 #include "scene_graph.hpp"
 #include "node.hpp"
 #include "camera_node.hpp"
@@ -23,17 +24,21 @@ void SceneGraph::setRoot(const std::shared_ptr<Node> &root) {
 }
 
 std::ostream &operator<<(std::ostream &os, const SceneGraph &graph) {
-    os << "name_: " << graph.name_ << " root_: " << graph.root_;
+    os << "name_: " << graph.name_ << " root_: " << graph.root_ << std::endl;
+    os << "children: \n";
+    for (auto child : graph.getRoot()->getChildren()) {
+        os << "\t" << *child << std::endl;
+    }
     return os;
 }
 
 
-void SceneGraph::applyFunction(VoidFunctionObject const& functionObject) {
-    functionObject(*root_);
+void SceneGraph::applyFunction(VoidFunctionObject const& functionObject) const {
+    functionObject(root_);
 
 }
 
-SceneGraph::~SceneGraph() {};
+SceneGraph::~SceneGraph() = default;
 
 
 SceneGraph setupSolarSystem() {
@@ -42,17 +47,22 @@ SceneGraph setupSolarSystem() {
     std::shared_ptr<Node> root = std::make_shared<Node>(Node{nullptr, "root"});
     sceneGraph.setRoot(root);
 
-    std::shared_ptr<Node> camera = std::make_shared<Node>(root,"camera");
+    std::shared_ptr<CameraNode> camera = std::make_shared<CameraNode>(root,"camera");
     root->addChild(camera);
 
     for (auto const& planet_name : PLANET_NAMES) {
-        auto planet_node = std::make_shared<GeometryNode>(root, planet_name, "models/sphere.obj");
+        auto planet_node = std::make_shared<Node>(root, planet_name + "-Holder");
+        auto geometry_node = std::make_shared<GeometryNode>(planet_node, planet_name + "-Geometry");
+        planet_node->addChild(geometry_node);
+        //planet_node->setLocalTransform(glm::translate(glm::mat4(1), glm::f32vec3(0.0f, 0.0f, -1.0)));
         root->addChild(planet_node);
     }
 
     std::shared_ptr<Node> earth_node = root->getChild("Earth");
     std::shared_ptr<GeometryNode> moon_node = std::make_shared<GeometryNode>(earth_node,"Moon", "models/sphere.obj");
     earth_node->addChild(moon_node);
+
+    // std::cout << sceneGraph <<std::endl;
 
     return sceneGraph;
 }

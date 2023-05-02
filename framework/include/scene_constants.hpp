@@ -6,15 +6,15 @@
 
 #pragma region Planets
 std::vector<std::string> PLANET_NAMES {
-        "Mercury-Holder",
-        "Venus-Holder",
-        "Earth-Holder",
-        "Mars-Holder",
-        "Jupiter-Holder",
-        "Saturn-Holder",
-        "Uranus-Holder",
-        "Neptune-Holder",
-        "Pluto-Holder"
+        "Mercury",
+        "Venus",
+        "Earth",
+        "Mars",
+        "Jupiter",
+        "Saturn",
+        "Uranus",
+        "Neptune",
+        "Pluto"
 };
 
 std::vector<std::string> PLANET_GEOMETRY_NAMES {
