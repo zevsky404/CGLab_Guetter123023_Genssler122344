@@ -10,8 +10,8 @@
 class Node {
 
 private:
-    // Node parent_;
-    std::vector<Node> children_;
+    std::shared_ptr<Node> parent_;
+    std::vector<std::shared_ptr<Node>> children_;
     std::string name_;
     std::string path_;
     int depth_ = 0;

@@ -10,7 +10,6 @@ private:
 
 public:
     const model &getGeometry() const;
-
     void setGeometry(const model &geometry);
 };
 

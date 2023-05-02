@@ -4,6 +4,7 @@
 #include "node.hpp"
 #include "camera_node.hpp"
 #include "geometry_node.hpp"
+#include "scene_constants.hpp"
 
 const std::__cxx11::basic_string<char> &SceneGraph::getName() const {
     return name_;
@@ -32,17 +33,6 @@ void SceneGraph::applyFunction(VoidFunctionObject const& functionObject) {
 
 }
 
-std::vector<std::string> PLANETS {
-    "Mercury",
-    "Venus",
-    "Earth",
-    "Mars",
-    "Jupiter",
-    "Saturn",
-    "Uranus",
-    "Neptune",
-    "Pluto"
-};
 
 SceneGraph setupSolarSystem() {
     SceneGraph sceneGraph{};
@@ -53,7 +43,7 @@ SceneGraph setupSolarSystem() {
     CameraNode camera = CameraNode("camera");
     root.addChild(camera);
 
-    for (auto const& planet_name : PLANETS) {
+    for (auto const& planet_name : PLANET_NAMES) {
         auto planet_node = Node(planet_name);
         root.addChild(planet_node);
     }
