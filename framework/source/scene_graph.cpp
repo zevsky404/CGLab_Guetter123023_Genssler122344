@@ -6,19 +6,19 @@
 #include "geometry_node.hpp"
 #include "scene_constants.hpp"
 
-const std::__cxx11::basic_string<char> &SceneGraph::getName() const {
+const std::string &SceneGraph::getName() const {
     return name_;
 }
 
-void SceneGraph::setName(const std::__cxx11::basic_string<char> &name) {
+void SceneGraph::setName(const std::string &name) {
     name_ = name;
 }
 
-const Node &SceneGraph::getRoot() const {
+const std::shared_ptr<Node> &SceneGraph::getRoot() const {
     return root_;
 }
 
-void SceneGraph::setRoot(const Node &root) {
+void SceneGraph::setRoot(const std::shared_ptr<Node> &root) {
     root_ = root;
 }
 
@@ -29,28 +29,30 @@ std::ostream &operator<<(std::ostream &os, const SceneGraph &graph) {
 
 
 void SceneGraph::applyFunction(VoidFunctionObject const& functionObject) {
-    functionObject(root_);
+    functionObject(*root_);
 
 }
+
+SceneGraph::~SceneGraph() {};
 
 
 SceneGraph setupSolarSystem() {
     SceneGraph sceneGraph{};
 
-    Node root = Node("root");
+    std::shared_ptr<Node> root = std::make_shared<Node>(Node{nullptr, "root"});
     sceneGraph.setRoot(root);
 
-    CameraNode camera = CameraNode("camera");
-    root.addChild(camera);
+    std::shared_ptr<Node> camera = std::make_shared<Node>(root,"camera");
+    root->addChild(camera);
 
     for (auto const& planet_name : PLANET_NAMES) {
-        auto planet_node = Node(planet_name);
-        root.addChild(planet_node);
+        auto planet_node = std::make_shared<GeometryNode>(root, planet_name, "models/sphere.obj");
+        root->addChild(planet_node);
     }
 
-    Node earth_node = root.getChild("Earth");
-    Node moon_node = Node("Moon");
-    earth_node.addChild(moon_node);
+    std::shared_ptr<Node> earth_node = root->getChild("Earth");
+    std::shared_ptr<GeometryNode> moon_node = std::make_shared<GeometryNode>(earth_node,"Moon", "models/sphere.obj");
+    earth_node->addChild(moon_node);
 
     return sceneGraph;
 }

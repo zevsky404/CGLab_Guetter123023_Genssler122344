@@ -13,8 +13,8 @@ private:
 public:
     CameraNode() = default;
 
-    explicit CameraNode(std::string name):
-    Node::Node(std::move(name)),
+    explicit CameraNode(std::shared_ptr<Node> parent, std::string name):
+    Node::Node(parent, std::move(name)),
     isPerspective_{},
     isEnabled_{},
     projectionMatrix_{}

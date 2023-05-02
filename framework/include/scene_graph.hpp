@@ -7,7 +7,7 @@
 class SceneGraph {
 private:
     std::string name_;
-    Node root_;
+    std::shared_ptr<Node> root_;
 
 public:
     SceneGraph() = default;
@@ -15,14 +15,15 @@ public:
     const std::string &getName() const;
     void setName(const std::string &name);
 
-    const Node &getRoot() const;
-    void setRoot(const Node &root);
+    const std::shared_ptr<Node> &getRoot() const;
+    void setRoot(const std::shared_ptr<Node> &root);
 
     friend std::ostream &operator<<(std::ostream &os, const SceneGraph &graph);
 
     // void printGraph(bool show_transformation = false);
 
     void applyFunction(VoidFunctionObject const& functionObject);
+    ~SceneGraph();
 };
 
 SceneGraph setupSolarSystem();

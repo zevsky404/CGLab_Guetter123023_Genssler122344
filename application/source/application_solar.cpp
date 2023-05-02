@@ -4,7 +4,11 @@
 #include "utils.hpp"
 #include "shader_loader.hpp"
 #include "model_loader.hpp"
+
 #include "scene_graph.hpp"
+#include "node.hpp"
+#include "geometry_node.hpp"
+
 
 #include <glbinding/gl/gl.h>
 // use gl definitions from glbinding 
@@ -97,6 +101,12 @@ void ApplicationSolar::initializeShaderPrograms() {
 // load models
 void ApplicationSolar::initializeGeometry() {
     model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
+    auto setup_geometry = [&] (std::shared_ptr<Node> node) {std::shared_ptr<GeometryNode> geometry = std::dynamic_pointer_cast<GeometryNode>(node);
+    if (!geometry) return;
+    model mo = model_loader::obj(m_resource_path + geometry->getGeometryPath(),
+                                model::NORMAL);
+    };
+    sceneGraph.applyFunction(setup_geometry);
 
   // generate vertex array object
   glGenVertexArrays(1, &planet_object.vertex_AO);
