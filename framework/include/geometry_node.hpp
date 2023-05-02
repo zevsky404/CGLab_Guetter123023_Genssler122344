@@ -23,8 +23,6 @@ public:
     const model_object &getGeometry() const;
     void setGeometry(const model_object &geometry);
 
-    const std::string &getGeometryPath() const;
-
     void renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) override;
 };
 

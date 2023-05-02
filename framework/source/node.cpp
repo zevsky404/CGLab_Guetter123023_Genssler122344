@@ -68,6 +68,9 @@ const glm::mat4 &Node::getLocalTransform() const {
 
 void Node::setLocalTransform(const glm::mat4 &localTransform) {
     local_transform_ = localTransform;
+    for (auto child : children_) {
+        child->setWorldTransform(world_transform_ * localTransform);
+    }
 }
 
 const glm::mat4 &Node::getWorldTransform() const {
@@ -76,10 +79,14 @@ const glm::mat4 &Node::getWorldTransform() const {
 
 void Node::setWorldTransform(const glm::mat4 &worldTransform) {
     world_transform_ = worldTransform;
+    for (auto child : children_) {
+        child->setWorldTransform(worldTransform * local_transform_);
+    }
 }
 
 void Node::addChild(std::shared_ptr<Node> child) {
     (*child).depth_ = getDepth() + 1;
+    child->setWorldTransform(world_transform_ * local_transform_);
     children_.push_back(child);
 }
 
@@ -89,7 +96,7 @@ std::shared_ptr<Node> Node::removeChild(const std::string &child_name) {
 }
 
 
-std::ostream &operator<<(std::ostream &os, const Node &node) {
+std::ostream& operator<<(std::ostream &os, const Node &node) {
     os << "Parent:" << node.parent_ << std::endl;
     os << "Name: " << node.name_ << std::endl;
     os << "Path in tree: " << node.path_ << std::endl;
@@ -101,7 +108,10 @@ std::ostream &operator<<(std::ostream &os, const Node &node) {
 }
 
 void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) {
-    glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f}) * local_transform_;
+    glm::mat4 rotation_test = glm::rotate(glm::fmat4{}, glm::radians(0.01f), glm::fvec3{0.0f, 1.0f, 0.0f});
+    setLocalTransform(rotation_test * getLocalTransform());
+
+    //glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f}) * local_transform_;
     // model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -3.0f});
 
     for (auto const& child : children_) {

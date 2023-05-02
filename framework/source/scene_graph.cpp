@@ -59,13 +59,12 @@ SceneGraph setupSolarSystem(model_object const& planet_model) {
     }
 
     std::shared_ptr<Node> earth_node = root->getChild("Earth-Holder");
-    // earth_node->setLocalTransform(glm::translate(glm::mat4(1), glm::f32vec3(0.0f, 0.0f, -1.0)));
     std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Moon-Holder");
+    earth_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
     std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Moon-Geometry", planet_model);
+    moon_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
     moon_node->addChild(moon_geometry);
     earth_node->addChild(moon_node);
-
-    // std::cout << sceneGraph <<std::endl;
 
     return sceneGraph;
 }

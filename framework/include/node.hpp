@@ -31,7 +31,7 @@ private:
 public:
     Node() = default;
 
-    explicit Node(std::shared_ptr<Node> parent, std::string const& name):
+    explicit Node(std::shared_ptr<Node> parent, std::string name):
     parent_{std::move(parent)},
     children_{},
     name_{std::move(name)},
