@@ -166,11 +166,14 @@ std::ostream& operator<<(std::ostream &os, const Node &node) {
 /// \param m_shaders
 /// \param m_view_transform
 void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) {
-
+    //get value to compute speed of revolution around the sun
     float revolution_value = std::find_if(PLANET_REVOLUTION.begin(), PLANET_REVOLUTION.end(), [&] (std::pair<std::string, float> const& pair) {return name_ == pair.first; })->second;
-    glm::mat4 rotation_test = glm::rotate(glm::fmat4{}, glm::radians(revolution_value), glm::fvec3{0.0f, 1.0f, 0.0f});
-    setLocalTransform(rotation_test * getLocalTransform());
+    //compute rotation value
+    glm::mat4 rotation_mat = glm::rotate(glm::fmat4{}, glm::radians(revolution_value), glm::fvec3{0.0f, 1.0f, 0.0f});
+    //set local Transformation Matrix
+    setLocalTransform(rotation_mat * getLocalTransform());
 
+    //call function also for children of node
     for (auto const& child : children_) {
         child->renderNode(m_shaders, m_view_transform);
     }
