@@ -5,15 +5,21 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
-
+///
+/// \return
 const model_object &GeometryNode::getGeometry() const {
     return geometry_;
 }
 
+///
+/// \param geometry
 void GeometryNode::setGeometry(const model_object &geometry) {
     geometry_ = geometry;
 }
 
+///
+/// \param m_shaders
+/// \param m_view_transform
 void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_shaders,
                               const glm::mat4 &m_view_transform) {
     // bind shader to upload uniforms

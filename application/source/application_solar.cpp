@@ -116,13 +116,6 @@ void ApplicationSolar::initializeShaderPrograms() {
 // load models
 void ApplicationSolar::initializeGeometry() {
     model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
-    /*auto setup_geometry = [&] (std::shared_ptr<Node> node) {
-        auto node_geometry = std::dynamic_pointer_cast<GeometryNode>(node);
-    if (node_geometry) {
-        node_geometry->setGeometry(planet_model);
-        }
-    };
-    sceneGraph.applyFunction(setup_geometry);*/
 
   // generate vertex array object
   glGenVertexArrays(1, &planet_object.vertex_AO);

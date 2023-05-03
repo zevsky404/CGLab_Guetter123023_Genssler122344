@@ -10,7 +10,9 @@ private:
     model_object geometry_;
 
 public:
+    //default constructor
     GeometryNode() = default;
+
     GeometryNode(std::shared_ptr<Node> parent, std::string const& name):
         Node::Node(std::move(parent), name),
         geometry_{} {};
@@ -20,9 +22,12 @@ public:
         geometry_{geometry} {
     };
 
+    //get geometry variable
     const model_object &getGeometry() const;
+    //set geometry variable
     void setGeometry(const model_object &geometry);
 
+    //render function for geometry node
     void renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) override;
 };
 
