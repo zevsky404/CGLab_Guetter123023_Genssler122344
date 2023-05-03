@@ -17,15 +17,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 std::vector<std::pair<std::string, float>> PLANET_REVOLUTION {
-        std::make_pair("Mercury-Holder", 0.001f),
-        std::make_pair("Venus-Holder", 0.001f),
-        std::make_pair("Earth-Holder", 0.001f),
-        std::make_pair("Mars-Holder", 0.001f),
-        std::make_pair("Jupiter-Holder", 0.001f),
-        std::make_pair("Saturn-Holder", 0.001f),
+        std::make_pair("Mercury-Holder", 0.04f),
+        std::make_pair("Venus-Holder", 0.03f),
+        std::make_pair("Earth-Holder", 0.01f),
+        std::make_pair("Mars-Holder", 0.009f),
+        std::make_pair("Jupiter-Holder", 0.006f),
+        std::make_pair("Saturn-Holder", 0.003f),
         std::make_pair("Uranus-Holder", 0.001f),
-        std::make_pair("Neptune-Holder", 0.001f),
-        std::make_pair("Pluto-Holder", 0.001f)
+        std::make_pair("Neptune-Holder", 0.0009f),
+        std::make_pair("Pluto-Holder", 0.0006f)
 };
 
 
