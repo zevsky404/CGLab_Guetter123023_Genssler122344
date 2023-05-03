@@ -6,17 +6,14 @@
 
 class CameraNode : public Node{
 private:
-    //
     bool isPerspective_ = false;
-    //
     bool isEnabled_ = false;
-    //
     glm::mat4 projectionMatrix_;
 
 public:
     //default constructor
     CameraNode() = default;
-    //
+
     explicit CameraNode(std::shared_ptr<Node> parent, std::string name):
     Node::Node(parent, std::move(name)),
     isPerspective_{},
@@ -24,19 +21,13 @@ public:
     projectionMatrix_{}
     {}
 
-    //
     bool isPerspective() const;
-    //
     void setIsPerspective(bool isPerspective);
 
-    //
-    bool isEnabled1() const;
-    //
+    bool isEnabled() const;
     void setIsEnabled(bool isEnabled);
 
-    //
     const glm::mat4 &getProjectionMatrix() const;
-    //
     void setProjectionMatrix(const glm::mat4 &projectionMatrix);
 
 };

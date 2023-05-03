@@ -34,9 +34,9 @@ private:
     glm::mat4 world_transform_;
 
 public:
-    //
+    //default constructor
     Node() = default;
-    //
+
     explicit Node(std::shared_ptr<Node> parent, std::string name):
     parent_{std::move(parent)},
     children_{},
@@ -96,13 +96,10 @@ public:
     //render function for Node
     virtual void renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform);
 
-    //
     void translate(glm::vec3 const& translation);
 
-    //
     void rotate(float angle, glm::vec3 const& axis);
 
-    //
     void scale(float scale);
 
     //void applyFunction(std::function<void(Node)> const& functionObject);

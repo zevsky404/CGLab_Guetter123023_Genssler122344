@@ -5,19 +5,19 @@
 #include <GLFW/glfw3.h>
 #include <glm/gtc/type_ptr.hpp>
 
-///
-/// \return
+/// getter of geometry
+/// \return model_object geometry
 const model_object &GeometryNode::getGeometry() const {
     return geometry_;
 }
 
-///
+/// setter for geometry
 /// \param geometry
 void GeometryNode::setGeometry(const model_object &geometry) {
     geometry_ = geometry;
 }
 
-///
+/// render geometry Node
 /// \param m_shaders
 /// \param m_view_transform
 void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_shaders,

@@ -8,34 +8,34 @@
 #include "scene_constants.hpp"
 #include "point_light_node.hpp"
 
-///
-/// \return
+/// get name of the scene
+/// \return name of scene
 const std::string &SceneGraph::getName() const {
     return name_;
 }
 
-///
+/// set name of scene
 /// \param name
 void SceneGraph::setName(const std::string &name) {
     name_ = name;
 }
 
-///
-/// \return
+/// get root of scene
+/// \return shared_ptr root
 const std::shared_ptr<Node> &SceneGraph::getRoot() const {
     return root_;
 }
 
-///
+/// set root of scene
 /// \param root
 void SceneGraph::setRoot(const std::shared_ptr<Node> &root) {
     root_ = root;
 }
 
-///
+/// print scene
 /// \param os
 /// \param graph
-/// \return
+/// \return cli output
 std::ostream &operator<<(std::ostream &os, const SceneGraph &graph) {
     os << "name_: " << graph.name_ << " root_: " << graph.root_ << std::endl;
     os << "children: \n";
@@ -53,9 +53,9 @@ std::ostream &operator<<(std::ostream &os, const SceneGraph &graph) {
 
 SceneGraph::~SceneGraph() = default;
 
-///
+/// setup the scene graph of the solar system
 /// \param planet_model
-/// \return
+/// \return scene graph
 SceneGraph setupSolarSystem(model_object const& planet_model) {
     SceneGraph sceneGraph{};
 

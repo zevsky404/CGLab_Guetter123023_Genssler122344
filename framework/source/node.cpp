@@ -18,81 +18,81 @@
 // Getters and setters, class utility
 # pragma region
 
-///
-/// \return parent node
+/// getter for parent node
+/// \return shared_ptr parent node
 const std::shared_ptr<Node> Node::getParent() const{
     return parent_;
 };
 
-///
+/// setter for parent node
 /// \param node
 void Node::setParent(std::shared_ptr<Node> node){
     parent_ = node;
 };
 
-///
-/// \return
+/// getter for children vector
+/// \return vector children
 const std::vector<std::shared_ptr<Node>> &Node::getChildren() const {
     return children_;
 }
 
-///
-/// \param name
-/// \return
+/// getter for one specific child
+/// \param name of specific child
+/// \return Node child
 const std::shared_ptr<Node> Node::getChild(const std::string &name) const {
     auto foundChild = std::find_if(children_.begin(), children_.end(), [name] (std::shared_ptr<Node> const& child) {return name == (*child).name_;});
     return *foundChild;
 }
 
-///
-/// \return
+/// getter for node name
+/// \return string name of node
 const std::string &Node::getName() const {
     return name_;
 }
 
-///
+/// setter for node name
 /// \param name
 void Node::setName(const std::string &name) {
     name_ = name;
 }
 
-///
+/// setter for children vector
 /// \param children
 void Node::setChildren(const std::vector<std::shared_ptr<Node>> &children) {
     children_ = children;
 }
 
-///
-/// \return
+/// getter for path
+/// \return string path
 const std::string &Node::getPath() const {
     return path_;
 }
 
-///
+/// setter for path
 /// \param path
 void Node::setPath(const std::string &path) {
     path_ = path;
 }
 
-///
-/// \return
+/// getter for depth
+/// \return integer depth
 int Node::getDepth() const {
     return depth_;
 }
 
-///
+/// setter for depth
 /// \param depth
 void Node::setDepth(int depth) {
     depth_ = depth;
 }
 
-///
-/// \return
+/// getter for LocalTransformation
+/// \return mat4 local transformation
 const glm::mat4 &Node::getLocalTransform() const {
     return local_transform_;
 }
 
-///
+/// setter for LocalTransformation
 /// \param localTransform
 void Node::setLocalTransform(const glm::mat4 &localTransform) {
     local_transform_ = localTransform;
@@ -101,22 +101,23 @@ void Node::setLocalTransform(const glm::mat4 &localTransform) {
     }
 }
 
-///
-/// \return
+/// getter for WorldTransformation
+/// \return worldTransformation
 const glm::mat4 &Node::getWorldTransform() const {
     return world_transform_;
 }
 
-///
+/// setter for woldTransformation
 /// \param worldTransform
 void Node::setWorldTransform(const glm::mat4 &worldTransform) {
     world_transform_ = worldTransform;
+    //setting also the worldTransformation for the children of the node
     for (auto child : children_) {
         child->setWorldTransform(worldTransform * local_transform_);
     }
 }
 
-///
+/// add child to children vector
 /// \param child
 void Node::addChild(std::shared_ptr<Node> child) {
     (*child).depth_ = getDepth() + 1;
@@ -124,18 +125,18 @@ void Node::addChild(std::shared_ptr<Node> child) {
     children_.push_back(child);
 }
 
-///
+/// remove specific child form children vector
 /// \param child_name
-/// \return
+/// \return Node deleted child
 std::shared_ptr<Node> Node::removeChild(const std::string &child_name) {
     auto found_child = std::remove_if(children_.begin(), children_.end(), [child_name] (std::shared_ptr<Node> const& child) {return child_name == (*child).name_;});
     return *found_child;
 }
 
-///
+/// print out node
 /// \param os
 /// \param node
-/// \return
+/// \return ostream / cli output
 std::ostream& operator<<(std::ostream &os, const Node &node) {
     os << "Parent:" << node.parent_ << std::endl;
     os << "Name: " << node.name_ << std::endl;
@@ -147,7 +148,7 @@ std::ostream& operator<<(std::ostream &os, const Node &node) {
     }
 }
 
-///
+/// render node
 /// \param m_shaders
 /// \param m_view_transform
 void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) {
@@ -162,20 +163,20 @@ void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, gl
     }
 }
 
-///
+/// translate Node
 /// \param translation
 void Node::translate(glm::vec3 const& translation){
     local_transform_ = glm::translate(local_transform_, translation);
 }
 
-///
+/// rotate Node
 /// \param angle
 /// \param axis
 void Node::rotate(float angle, glm::vec3 const& axis){
     local_transform_ = glm::rotate(local_transform_,angle,axis);
 }
 
-///
+/// scale Node
 /// \param scale
 void Node::scale(float scale){
     local_transform_=glm::scale(local_transform_, glm::vec3{scale,scale,scale});
@@ -188,6 +189,7 @@ void Node::scale(float scale){
     }
 }*/
 
+//free allocated memory
 Node::~Node() = default;
 #pragma endregion
 
