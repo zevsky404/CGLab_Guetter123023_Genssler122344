@@ -63,7 +63,7 @@ SceneGraph setupSolarSystem(model_object const& planet_model) {
     sceneGraph.setRoot(root);
 
     //auto sun_light_node = std::make_shared<PointLightNode>(root,"Sun",glm::vec3{0.0f,0.0f,0.0f},1.0f);
-    auto sun_light_node = std::make_shared<Node>(root,"Sun");
+    auto sun_light_node = std::make_shared<Node>(root,"Sun-Holder");
     auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Sun-Geometry",planet_model);
     sun_light_node->addChild(sun_geometry_node);
     root->addChild(sun_light_node);
@@ -72,22 +72,24 @@ SceneGraph setupSolarSystem(model_object const& planet_model) {
     root->addChild(camera);*/
 
     for (auto const& planet_name : PLANET_NAMES) {
-        auto planet_node = std::make_shared<Node>(root, planet_name + "-Holder");
+        auto planet_node = std::make_shared<Node>(sun_light_node, planet_name + "-Holder");
         auto geometry_node = std::make_shared<GeometryNode>(planet_node, planet_name + "-Geometry", planet_model);
         planet_node->addChild(geometry_node);
         //planet_node->setLocalTransform(glm::translate(glm::mat4(1), glm::f32vec3(0.0f, 0.0f, -1.0)));
-        root->addChild(planet_node);
+        sun_light_node->addChild(planet_node);
         geometry_node->scale(0.5f);
     }
 
-    std::shared_ptr<Node> earth_node = root->getChild("Earth-Holder");
+    std::shared_ptr<Node> earth_node = sun_light_node->getChild("Earth-Holder");
     std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Moon-Holder");
-    earth_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
     std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Moon-Geometry", planet_model);
+
+    earth_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
     moon_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
+
     moon_node->addChild(moon_geometry);
     earth_node->addChild(moon_node);
-    moon_geometry->scale(0.5f);
+    moon_geometry->scale(0.4f);
 
     return sceneGraph;
 }
