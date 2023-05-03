@@ -98,7 +98,7 @@ public:
 
     void translate(glm::vec3 const& translation);
 
-    void rotate(float angle, glm::vec3 const& axis);
+    void rotate(float angle);
 
     void scale(float scale);
 

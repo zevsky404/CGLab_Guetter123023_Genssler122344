@@ -29,9 +29,28 @@ std::vector<std::string> PLANET_GEOMETRY_NAMES {
         "Pluto-Geometry"
 };
 
-std::vector<model> PLANET_GEOMETRY {
+std::vector<float> PLANET_SIZES {
+    0.2f,
+    0.4f,
+    0.5f,
+    0.3f,
+    0.8f,
+    0.7f,
+    0.4f,
+    0.4f,
+    0.1f
+};
 
-
+std::vector<float> PLANET_DISTANCES {
+    2.0f,
+    4.0f,
+    6.0f,
+    8.0f,
+    10.0f,
+    12.0f,
+    14.0f,
+    16.0f,
+    18.0f
 };
 
 std::vector<float> PLANET_ROTATION {
@@ -47,17 +66,7 @@ std::vector<float> PLANET_ROTATION {
 
 };
 
-std::vector<float> PLANET_REVOLUTION {
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0
-};
+
 
 #pragma endregion
 

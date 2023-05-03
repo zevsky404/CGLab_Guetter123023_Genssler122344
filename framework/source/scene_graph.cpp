@@ -62,8 +62,8 @@ SceneGraph setupSolarSystem(model_object const& planet_model) {
     std::shared_ptr<Node> root = std::make_shared<Node>(Node{nullptr, "root"});
     sceneGraph.setRoot(root);
 
-    //auto sun_light_node = std::make_shared<PointLightNode>(root,"Sun",glm::vec3{0.0f,0.0f,0.0f},1.0f);
-    auto sun_light_node = std::make_shared<Node>(root,"Sun-Holder");
+    auto sun_light_node = std::make_shared<PointLightNode>(root,"Sun-Holder",glm::vec3{0.0f,0.0f,0.0f},1.0f);
+    //auto sun_light_node = std::make_shared<Node>(root,"Sun-Holder");
     auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Sun-Geometry",planet_model);
     sun_light_node->addChild(sun_geometry_node);
     root->addChild(sun_light_node);
@@ -71,20 +71,22 @@ SceneGraph setupSolarSystem(model_object const& planet_model) {
     /*std::shared_ptr<CameraNode> camera = std::make_shared<CameraNode>(root,"camera");
     root->addChild(camera);*/
 
-    for (auto const& planet_name : PLANET_NAMES) {
-        auto planet_node = std::make_shared<Node>(sun_light_node, planet_name + "-Holder");
-        auto geometry_node = std::make_shared<GeometryNode>(planet_node, planet_name + "-Geometry", planet_model);
+    for (size_t i = 0; i <= PLANET_NAMES.size() - 1; ++i) {
+        auto planet_node = std::make_shared<Node>(sun_light_node, PLANET_NAMES[i] + "-Holder");
+        std::cout << planet_node->getName() << std::endl;
+        auto geometry_node = std::make_shared<GeometryNode>(planet_node, PLANET_NAMES[i] + "-Geometry", planet_model);
+        std::cout << geometry_node->getName() << std::endl;
         planet_node->addChild(geometry_node);
-        //planet_node->setLocalTransform(glm::translate(glm::mat4(1), glm::f32vec3(0.0f, 0.0f, -1.0)));
         sun_light_node->addChild(planet_node);
-        geometry_node->scale(0.5f);
+        planet_node->translate(glm::vec3{0.0f, 0.0f, PLANET_DISTANCES[i]});
+        planet_node->scale(PLANET_SIZES[i]);
     }
 
     std::shared_ptr<Node> earth_node = sun_light_node->getChild("Earth-Holder");
     std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Moon-Holder");
     std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Moon-Geometry", planet_model);
 
-    earth_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
+    // earth_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, 2.0}));
     moon_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
 
     moon_node->addChild(moon_geometry);

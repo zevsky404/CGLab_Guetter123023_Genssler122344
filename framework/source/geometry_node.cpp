@@ -26,7 +26,7 @@ void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_sha
     glUseProgram(m_shaders.at("planet").handle);
 
     glm::fmat4 model_matrix = getWorldTransform() * getLocalTransform();
-    // model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -1.0f});
+
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                        1, GL_FALSE, glm::value_ptr(model_matrix));
 

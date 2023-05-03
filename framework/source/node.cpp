@@ -9,10 +9,24 @@
 #include "model_loader.hpp"
 #include "structs.hpp"
 
+
+
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+
+std::vector<std::pair<std::string, float>> PLANET_REVOLUTION {
+        std::make_pair("Mercury-Holder", 0.001f),
+        std::make_pair("Venus-Holder", 0.001f),
+        std::make_pair("Earth-Holder", 0.001f),
+        std::make_pair("Mars-Holder", 0.001f),
+        std::make_pair("Jupiter-Holder", 0.001f),
+        std::make_pair("Saturn-Holder", 0.001f),
+        std::make_pair("Uranus-Holder", 0.001f),
+        std::make_pair("Neptune-Holder", 0.001f),
+        std::make_pair("Pluto-Holder", 0.001f)
+};
 
 
 // Getters and setters, class utility
@@ -152,11 +166,10 @@ std::ostream& operator<<(std::ostream &os, const Node &node) {
 /// \param m_shaders
 /// \param m_view_transform
 void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) {
-    glm::mat4 rotation_test = glm::rotate(glm::fmat4{}, glm::radians(0.01f), glm::fvec3{0.0f, 1.0f, 0.0f});
-    setLocalTransform(rotation_test * getLocalTransform());
 
-    //glm::fmat4 model_matrix = glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f}) * local_transform_;
-    // model_matrix = glm::translate(model_matrix, glm::fvec3{0.0f, 0.0f, -3.0f});
+    float revolution_value = std::find_if(PLANET_REVOLUTION.begin(), PLANET_REVOLUTION.end(), [&] (std::pair<std::string, float> const& pair) {return name_ == pair.first; })->second;
+    glm::mat4 rotation_test = glm::rotate(glm::fmat4{}, glm::radians(revolution_value), glm::fvec3{0.0f, 1.0f, 0.0f});
+    setLocalTransform(rotation_test * getLocalTransform());
 
     for (auto const& child : children_) {
         child->renderNode(m_shaders, m_view_transform);
@@ -172,8 +185,9 @@ void Node::translate(glm::vec3 const& translation){
 /// rotate Node
 /// \param angle
 /// \param axis
-void Node::rotate(float angle, glm::vec3 const& axis){
-    local_transform_ = glm::rotate(local_transform_,angle,axis);
+void Node::rotate(float angle){
+    glm::mat4 rotation_matrix = glm::rotate(glm::fmat4{}, angle, glm::fvec3{0.0f, 1.0f, 0.0f});
+    setLocalTransform(rotation_matrix * local_transform_);
 }
 
 /// scale Node
