@@ -24,7 +24,7 @@ void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_sha
                               const glm::mat4 &m_view_transform) {
     // bind shader to upload uniforms
     glUseProgram(m_shaders.at("planet").handle);
-
+    // rotate planets around own y-axis
     glm::fmat4 model_matrix = getWorldTransform() * getLocalTransform() * glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
 
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),

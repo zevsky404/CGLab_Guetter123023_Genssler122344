@@ -102,6 +102,7 @@ SceneGraph setupSolarSystem(model_object const& planet_model) {
 
     //translate moon so it has a distance to the earth
     moon_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
+    //moon_node->translate(glm::vec3{0.0f,0.0f,-2.0f});
     //add geometry node as child to moon node
     moon_node->addChild(moon_geometry);
     //add moon node as child to earth node
