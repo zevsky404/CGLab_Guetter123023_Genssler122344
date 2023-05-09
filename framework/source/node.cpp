@@ -172,10 +172,15 @@ void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, gl
     //compute rotation value
     glm::mat4 rotation_mat = glm::rotate(glm::fmat4{}, glm::radians(revolution_value), glm::fvec3{0.0f, 1.0f, 0.0f});
     glm::mat4 moon_rotation = glm::rotate(glm::fmat4{}, glm::radians(0.01f), glm::fvec3{0.0f, 1.0f, 0.0f});
+    glm::mat4 enterprise_rotation = glm::rotate(glm::fmat4{}, glm::radians(-0.01f), glm::fvec3{0.0f, 1.0f, 0.0f});
     //set local Transformation Matrix
     setLocalTransform(rotation_mat * getLocalTransform());
     // set local transform of moon separately so it spins around earth
     if (name_ == "Moon-Holder") {
+        setLocalTransform(moon_rotation * getLocalTransform());
+    }
+
+    if (name_ == "Enterprise-Holder") {
         setLocalTransform(moon_rotation * getLocalTransform());
     }
 

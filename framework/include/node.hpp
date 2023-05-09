@@ -19,7 +19,7 @@
 
 class Node {
 
-private:
+protected:
     //parent node
     std::shared_ptr<Node> parent_;
     //container to store all children

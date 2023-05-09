@@ -27,6 +27,6 @@ public:
     ~SceneGraph();
 };
 
-SceneGraph setupSolarSystem(model_object const& planet_model);
+SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects);
 
 #endif //OPENGL_FRAMEWORK_SCENE_GRAPH_HPP
