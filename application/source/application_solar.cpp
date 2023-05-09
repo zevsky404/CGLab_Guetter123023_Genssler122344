@@ -162,11 +162,11 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, 0.1f});
     uploadView();
   }
-  else if (key == GLFW_KEY_SPACE  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+  else if (key == GLFW_KEY_C  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
       m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, -0.1f, 0.0f});
       uploadView();
   }
-  else if (key == GLFW_KEY_LEFT_SHIFT && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+  else if (key == GLFW_KEY_SPACE && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
       m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.1f, 0.0f});
       uploadView();
   }
@@ -182,7 +182,15 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
 
 //handle delta mouse movement input
 void ApplicationSolar::mouseCallback(double pos_x, double pos_y) {
-  // mouse handling
+    // mouse handling, x position movement
+    m_view_transform = glm::rotate(m_view_transform,
+                                   glm::radians(float(pos_x / 70)),
+                                   glm::vec3{0.0f, -1.0f, 0.0f});
+    // mouse handling, y position movement
+    m_view_transform = glm::rotate(m_view_transform,
+                                   glm::radians(float(pos_y / 70)),
+                                glm::vec3{-1.0f, 0.0f, 0.0f});
+    uploadView();
 }
 
 //handle resizing

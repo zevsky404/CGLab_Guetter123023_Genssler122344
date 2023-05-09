@@ -15,6 +15,7 @@
 #include <GLFW/glfw3.h>
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <utility>
 
 std::vector<std::pair<std::string, float>> PLANET_REVOLUTION {
         std::make_pair("Mercury-Holder", 0.04f),
@@ -41,7 +42,7 @@ const std::shared_ptr<Node> Node::getParent() const{
 /// setter for parent node
 /// \param node
 void Node::setParent(std::shared_ptr<Node> node){
-    parent_ = node;
+    parent_ = std::move(node);
 };
 
 /// getter for children vector
@@ -111,7 +112,7 @@ const glm::mat4 &Node::getLocalTransform() const {
 void Node::setLocalTransform(const glm::mat4 &localTransform) {
     local_transform_ = localTransform;
     for (auto child : children_) {
-        child->setWorldTransform(world_transform_ * localTransform);
+        child->setWorldTransform(world_transform_ * child->getLocalTransform()); // local transform of child, not current node
     }
 }
 
@@ -127,7 +128,7 @@ void Node::setWorldTransform(const glm::mat4 &worldTransform) {
     world_transform_ = worldTransform;
     //setting also the worldTransformation for the children of the node
     for (auto child : children_) {
-        child->setWorldTransform(worldTransform * local_transform_);
+        child->setWorldTransform(worldTransform * child->local_transform_);
     }
 }
 

@@ -76,6 +76,7 @@ SceneGraph setupSolarSystem(model_object const& planet_model) {
 
     /*std::shared_ptr<CameraNode> camera = std::make_shared<CameraNode>(root,"camera");
     root->addChild(camera);*/
+    // use local transform of camera, not view transform
 
     //for all planets do
     for (size_t i = 0; i <= PLANET_NAMES.size() - 1; ++i) {
