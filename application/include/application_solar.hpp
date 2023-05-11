@@ -25,8 +25,6 @@ class ApplicationSolar : public Application {
   // draw all objects
   void render() const;
 
-  void renderPlanet(std::shared_ptr<GeometryNode> geometry_node) const;
-
  protected:
   void initializeShaderPrograms();
   void initializeGeometry();
@@ -40,6 +38,8 @@ class ApplicationSolar : public Application {
   // cpu representation of model
   model_object planet_object;
   model_object enterprise_object;
+  model_object star_object;
+
   // camera transform matrix
   glm::fmat4 m_view_transform;
   // camera projection matrix
