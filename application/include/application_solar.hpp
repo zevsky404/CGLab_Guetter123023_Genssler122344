@@ -27,7 +27,9 @@ class ApplicationSolar : public Application {
 
  protected:
   void initializeShaderPrograms();
-  void initializeGeometry();
+  void initializePlanetGeometry();
+  void initializeEnterpriseGeometry();
+  void initializeStarGeometry();
   // update uniform values
   void uploadUniforms();
   // upload projection matrix

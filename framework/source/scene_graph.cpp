@@ -74,6 +74,11 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
     //add sun node as child to root
     root->addChild(sun_light_node);
 
+    /*auto star_holder = std::make_shared<Node>(root, "Star-Holder");
+    auto star_geometry = std::make_shared<GeometryNode>(root, "Star-Geometry", model_objects[2]);
+    star_holder->addChild(star_geometry);
+    root->addChild(star_holder);*/
+
     /*std::shared_ptr<CameraNode> camera = std::make_shared<CameraNode>(root,"camera");
     root->addChild(camera);*/
     // use local transform of camera, not view transform

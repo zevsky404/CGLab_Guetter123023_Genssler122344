@@ -27,6 +27,9 @@ public:
     //set geometry variable
     void setGeometry(const model_object &geometry);
 
+    void renderStars(const std::map<std::string, shader_program> &m_shaders,
+                                   const glm::mat4 &m_view_transform) const;
+
     //render function for geometry node
     void renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) override;
 };
