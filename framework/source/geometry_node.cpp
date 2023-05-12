@@ -19,7 +19,7 @@ void GeometryNode::setGeometry(const model_object &geometry) {
 
 void GeometryNode::renderStars(const std::map<std::string, shader_program> &m_shaders,
                                const glm::mat4 &m_view_transform) const {
-    glUseProgram(m_shaders.at("stars").handle);
+    //qglUseProgram(m_shaders.at("stars").handle);
     /*glm::fmat4 model_matrix = getWorldTransform() * getLocalTransform();
 
     glUniformMatrix4fv(m_shaders.at("stars").u_locs.at("ModelMatrix"),
@@ -30,7 +30,7 @@ void GeometryNode::renderStars(const std::map<std::string, shader_program> &m_sh
                            1, GL_FALSE, glm::value_ptr(normal_matrix));*/
     gl::glBindVertexArray(geometry_.vertex_AO);
 
-    glDrawArrays(geometry_.draw_mode, 0,geometry_.num_elements);
+    glDrawArrays(GL_POINTS, 0,geometry_.num_elements);
 }
 
 /// render geometry Node
