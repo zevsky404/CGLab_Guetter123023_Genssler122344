@@ -191,15 +191,13 @@ void ApplicationSolar::initializeStarGeometry() {
 
     // for each star push random position and color values
     for (int i = 0; i < STAR_COUNT; ++i) {
-        float x = static_cast <float> (std::rand()) / (static_cast <float> (RAND_MAX/100));
-        float y = static_cast <float> (std::rand()) / (static_cast <float> (RAND_MAX/100));
-        float z = static_cast <float> (std::rand()) / (static_cast <float> (RAND_MAX/100));
-        //float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-        //float g = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-        //float b = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-        float r = 1.0;
-        float g = 1.0;
-        float b = 1.0;
+        float x = (static_cast <float> (std::rand()) / (static_cast <float> (RAND_MAX/100)))-50;
+        float y = (static_cast <float> (std::rand()) / (static_cast <float> (RAND_MAX/100)))-50;
+        float z = (static_cast <float> (std::rand()) / (static_cast <float> (RAND_MAX/100)))-50;
+        float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+        float g = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+        float b = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+
 
         for (float const number : {x, y, z, r, g, b}) {
             stars_vec.push_back(number);

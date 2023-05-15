@@ -39,10 +39,10 @@ void GeometryNode::renderStars(const std::map<std::string, shader_program> &m_sh
 void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_shaders,
                               const glm::mat4 &m_view_transform) {
     if (name_ == "Star-Geometry") {
-        std::cout << "rendering stars" << std::endl;
+        //std::cout << "rendering stars" << std::endl;
         renderStars(m_shaders, m_view_transform);
     } else {
-        std::cout << "rendering a planet" << std::endl;
+        //std::cout << "rendering a planet" << std::endl;
         // bind shader to upload uniforms
         glUseProgram(m_shaders.at("planet").handle);
         // rotate planets around own y-axis
