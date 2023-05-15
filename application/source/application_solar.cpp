@@ -225,6 +225,48 @@ void ApplicationSolar::initializeStarGeometry() {
     star_object.num_elements = GLsizei(STAR_COUNT);
 }
 
+void ApplicationSolar::initializeOrbitGeometry() {
+    std::vector<float> points;
+    for (int i = 0; i < 100; ++i) {
+        float theta = 2 * (float)M_PI * (float)i / 100;
+        points.push_back((float)sin(theta));
+        points.push_back(0);
+        points.push_back((float)cos(theta));
+    }
+
+    // generate vertex array object
+    glGenVertexArrays(1, &orbit_object.vertex_AO);
+    // bind the array for attaching buffers
+    glBindVertexArray(orbit_object.vertex_AO);
+
+    // generate generic buffer
+    glGenBuffers(1, &orbit_object.vertex_BO);
+    // bind this as an vertex array buffer containing all attributes
+    glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);
+    // configure currently bound array buffer
+    glBufferData(GL_ARRAY_BUFFER, GLsizei(points.size() * sizeof(float)),
+                 points.data(), GL_STATIC_DRAW);
+
+    // activate first attribute on gpu
+    glEnableVertexAttribArray(0);
+    // first attribute is 3 floats with no offset & stride
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+    // generate generic buffer
+    glGenBuffers(1, &orbit_object.element_BO);
+    // bind this as an vertex array buffer containing all attributes
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, orbit_object.element_BO);
+    // configure currently bound array buffer
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                 GLsizei(sizeof(float) * points.size()), points.data(),
+                 GL_STATIC_DRAW);
+
+    // store type of primitive to draw
+    orbit_object.draw_mode = GL_LINE_LOOP;
+    // transfer number of indices to model object
+    orbit_object.num_elements = GLsizei(points.size() / 3);
+}
+
 ///////////////////////////// callback functions for window events ////////////
 // handle key input
 void ApplicationSolar::keyCallback(int key, int action, int mods) {
