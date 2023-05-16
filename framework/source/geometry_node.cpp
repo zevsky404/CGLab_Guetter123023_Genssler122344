@@ -30,7 +30,7 @@ void GeometryNode::renderStars(const std::map<std::string, shader_program> &m_sh
                            1, GL_FALSE, glm::value_ptr(normal_matrix));
     gl::glBindVertexArray(geometry_.vertex_AO);
 
-    glDrawArrays(GL_POINTS, 0,geometry_.num_elements);
+    glDrawArrays(geometry_.draw_mode, 0,geometry_.num_elements);
 }
 
 void GeometryNode::renderOrbit(const std::map<std::string, shader_program> &m_shaders,
@@ -46,7 +46,7 @@ void GeometryNode::renderOrbit(const std::map<std::string, shader_program> &m_sh
                            1, GL_FALSE, glm::value_ptr(normal_matrix));
     gl::glBindVertexArray(geometry_.vertex_AO);
 
-    glDrawElements(geometry_.draw_mode, geometry_.num_elements, model::INDEX.type, NULL);
+    glDrawArrays(geometry_.draw_mode,0, geometry_.num_elements);
 }
 
 /// render geometry Node
@@ -82,7 +82,7 @@ void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_sha
         gl::glBindVertexArray(geometry_.vertex_AO);
 
         // draw bound vertex array using bound shader
-        glDrawArrays(geometry_.draw_mode, 0,geometry_.num_elements);
+        gl::glDrawElements(geometry_.draw_mode, geometry_.num_elements, model::INDEX.type, NULL);
     }
 
 }

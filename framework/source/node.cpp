@@ -112,7 +112,8 @@ const glm::mat4 &Node::getLocalTransform() const {
 void Node::setLocalTransform(const glm::mat4 &localTransform) {
     local_transform_ = localTransform;
     for (auto child : children_) {
-        child->setWorldTransform(world_transform_ * child->getLocalTransform()); // local transform of child, not current node
+        //child->setWorldTransform(world_transform_ * child->getLocalTransform()); // local transform of child, not current node
+        child->setWorldTransform(world_transform_ * localTransform);
     }
 }
 

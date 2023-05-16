@@ -84,8 +84,9 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
     //for all planets do
     for (size_t i = 0; i <= PLANET_NAMES.size() - 1; ++i) {
         //initialize orbit as geometry node
-        auto orbit_geometry = std::make_shared<GeometryNode>(root, "Orbit");
+        auto orbit_geometry = std::make_shared<GeometryNode>(sun_light_node, "Orbit", model_objects[3]);
         sun_light_node->addChild(orbit_geometry);
+        orbit_geometry->scale(PLANET_DISTANCES[i]);
         //initialize planet as a node
         auto planet_node = std::make_shared<Node>(sun_light_node, PLANET_NAMES[i] + "-Holder");
         //initialize geometry node for said planet
@@ -104,6 +105,9 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
 
     //get node of earth
     std::shared_ptr<Node> earth_node = sun_light_node->getChild("Earth-Holder");
+    auto orbit_geometry_moon = std::make_shared<GeometryNode>(earth_node, "Orbit", model_objects[3]);
+    earth_node->addChild(orbit_geometry_moon);
+    orbit_geometry_moon->scale(2.0);
     //initialize moon node
     std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Moon-Holder");
     //initialize moon geometry node
@@ -116,7 +120,8 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
     earth_node->addChild(moon_node);
 
     //translate moon so it has a distance to the earth
-    moon_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
+    moon_node->translate(glm::vec3{0.0, 0.0, 2.0});
+    //moon_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0, 0.0, -2.0}));
     //scale moon
     moon_geometry->scale(0.5f);
 
@@ -124,6 +129,9 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
 
     //get jupiter node
     std::shared_ptr<Node> jupiter_node = sun_light_node->getChild("Jupiter-Holder");
+    auto orbit_geometry_jupiter = std::make_shared<GeometryNode>(jupiter_node, "Orbit", model_objects[3]);
+    jupiter_node->addChild(orbit_geometry_jupiter);
+    orbit_geometry_jupiter->scale(2.0);
     //initialise enterprise node
     std::shared_ptr<Node> enterprise_node = std::make_shared<Node>(earth_node,"Enterprise-Holder");
     // initialise enterprise geometry node
@@ -131,8 +139,9 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
 
     enterprise_node->addChild(enterprise_geometry);
     jupiter_node->addChild(enterprise_node);
-    enterprise_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0f, 0.0f, -2.0f}));
-    enterprise_geometry->rotate(glm::radians(-45.0f));
+    //enterprise_node->setLocalTransform(glm::translate(glm::mat4{}, glm::vec3{0.0f, 0.0f, -2.0f}));
+    enterprise_node->translate(glm::vec3{0.0f, 0.0f, -2.0f});
+    enterprise_geometry->rotate(glm::radians(-90.0f));
     enterprise_geometry->scale(0.6f);
 
     return sceneGraph;

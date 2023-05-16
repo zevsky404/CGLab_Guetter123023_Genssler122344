@@ -24,6 +24,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,planet_object{}
  ,enterprise_object{}
  ,star_object{}
+ ,orbit_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
  ,sceneGraph{}
@@ -33,7 +34,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
     initializeOrbitGeometry();
     initializeEnterpriseGeometry();
     initializeShaderPrograms();
-    std::vector<model_object> model_objects {planet_object, enterprise_object, star_object};
+    std::vector<model_object> model_objects {planet_object, enterprise_object, star_object, orbit_object};
     sceneGraph = setupSolarSystem(model_objects);
 }
 
@@ -265,7 +266,7 @@ void ApplicationSolar::initializeOrbitGeometry() {
     // activate first attribute on gpu
     glEnableVertexAttribArray(0);
     // first attribute is 3 floats with no offset & stride
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, nullptr);
 
     // generate generic buffer
     glGenBuffers(1, &orbit_object.element_BO);
