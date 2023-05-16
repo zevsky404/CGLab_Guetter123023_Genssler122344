@@ -83,6 +83,9 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
 
     //for all planets do
     for (size_t i = 0; i <= PLANET_NAMES.size() - 1; ++i) {
+        //initialize orbit as geometry node
+        auto orbit_geometry = std::make_shared<GeometryNode>(root, "Orbit");
+        sun_light_node->addChild(orbit_geometry);
         //initialize planet as a node
         auto planet_node = std::make_shared<Node>(sun_light_node, PLANET_NAMES[i] + "-Holder");
         //initialize geometry node for said planet

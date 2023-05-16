@@ -30,6 +30,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
 {
     initializeStarGeometry();
     initializePlanetGeometry();
+    initializeOrbitGeometry();
     initializeEnterpriseGeometry();
     initializeShaderPrograms();
     std::vector<model_object> model_objects {planet_object, enterprise_object, star_object};
@@ -62,6 +63,9 @@ void ApplicationSolar::uploadView() {
   glUseProgram(m_shaders.at("planet").handle);
   glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ViewMatrix"),
                      1, GL_FALSE, glm::value_ptr(view_matrix));
+  glUseProgram(m_shaders.at("orbit").handle);
+    glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ViewMatrix"),
+                       1, GL_FALSE, glm::value_ptr(view_matrix));
   glUseProgram(m_shaders.at("stars").handle);
   glUniformMatrix4fv(m_shaders.at("stars").u_locs.at("ViewMatrix"), 1,
                        GL_FALSE, glm::value_ptr(view_matrix));
@@ -69,20 +73,25 @@ void ApplicationSolar::uploadView() {
 }
 
 void ApplicationSolar::uploadProjection() {
-  // upload matrix to gpu
+    // bind shader to which to upload uniforms
     glUseProgram(m_shaders.at("planet").handle);
+    // upload matrix to gpu
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ProjectionMatrix"),
                      1, GL_FALSE, glm::value_ptr(m_view_projection));
+    // bind shader to which to upload uniforms
+    glUseProgram(m_shaders.at("orbit").handle);
+    // upload matrix to gpu
+    glUniformMatrix4fv(m_shaders.at("orbit").u_locs.at("ProjectionMatrix"),
+                       1, GL_FALSE, glm::value_ptr(m_view_projection));
+    // bind shader to which to upload uniforms
     glUseProgram(m_shaders.at("stars").handle);
+    // upload matrix to gpu
     glUniformMatrix4fv(m_shaders.at("stars").u_locs.at("ProjectionMatrix"),
                        1, GL_FALSE, glm::value_ptr(m_view_projection));
 }
 
 // update uniform locations
-void ApplicationSolar::uploadUniforms() { 
-    // bind shader to which to upload unforms
-    //glUseProgram(m_shaders.at("planet").handle);
-    //glUseProgram(m_shaders.at("stars").handle);
+void ApplicationSolar::uploadUniforms() {
     // upload uniform values to new locations
     uploadView();
     uploadProjection();
@@ -92,15 +101,22 @@ void ApplicationSolar::uploadUniforms() {
 // load shader sources
 void ApplicationSolar::initializeShaderPrograms() {
   // store shader program objects in container
-  m_shaders.emplace("planet", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/simple.vert"},
+    m_shaders.emplace("planet", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/simple.vert"},
                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/simple.frag"}}});
-  // request uniform locations for shader program
-  m_shaders.at("planet").u_locs["NormalMatrix"] = -1;
-  m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
-  m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
-  m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
+    // request uniform locations for shader program
+    m_shaders.at("planet").u_locs["NormalMatrix"] = -1;
+    m_shaders.at("planet").u_locs["ModelMatrix"] = -1;
+    m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
+    m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
 
-  m_shaders.emplace("stars", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/vao.vert"},
+    m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/orbit.vert"},
+                                            {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
+    m_shaders.at("orbit").u_locs["NormalMatrix"] = -1;
+    m_shaders.at("orbit").u_locs["ModelMatrix"] = -1;
+    m_shaders.at("orbit").u_locs["ViewMatrix"] = -1;
+    m_shaders.at("orbit").u_locs["ProjectionMatrix"] = -1;
+
+    m_shaders.emplace("stars", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/vao.vert"},
                                              {GL_FRAGMENT_SHADER, m_resource_path + "shaders/vao.frag"}}});
 
     m_shaders.at("stars").u_locs["NormalMatrix"] = -1;
@@ -108,7 +124,6 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("stars").u_locs["ViewMatrix"] = -1;
     m_shaders.at("stars").u_locs["ProjectionMatrix"] = -1;
 }
-
 // load models
 void ApplicationSolar::initializePlanetGeometry() {
     model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
@@ -226,12 +241,12 @@ void ApplicationSolar::initializeStarGeometry() {
 }
 
 void ApplicationSolar::initializeOrbitGeometry() {
-    std::vector<float> points;
+    std::vector<float> points ;
     for (int i = 0; i < 100; ++i) {
-        float theta = 2 * (float)M_PI * (float)i / 100;
-        points.push_back((float)sin(theta));
+        float segment = 2 * (float)M_PI * (float)i / 100;
+        points.push_back((float)sin(segment));
         points.push_back(0);
-        points.push_back((float)cos(theta));
+        points.push_back((float)cos(segment));
     }
 
     // generate vertex array object
@@ -270,30 +285,36 @@ void ApplicationSolar::initializeOrbitGeometry() {
 ///////////////////////////// callback functions for window events ////////////
 // handle key input
 void ApplicationSolar::keyCallback(int key, int action, int mods) {
-  if (key == GLFW_KEY_W  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    //moving forward
+    if (key == GLFW_KEY_W  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, -0.07f});
     uploadView();
-  }
-  else if (key == GLFW_KEY_S  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    }
+    //moving backwards
+    else if (key == GLFW_KEY_S  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, 0.07f});
     uploadView();
-  }
-  else if (key == GLFW_KEY_C  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    }
+    //moving down
+    else if (key == GLFW_KEY_C  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
       m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, -0.07f, 0.0f});
       uploadView();
-  }
-  else if (key == GLFW_KEY_SPACE && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    }
+    //moving up
+    else if (key == GLFW_KEY_SPACE && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
       m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.07f, 0.0f});
       uploadView();
-  }
-  else if (key == GLFW_KEY_A  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    }
+    //moving left
+    else if (key == GLFW_KEY_A  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
       m_view_transform = glm::translate(m_view_transform, glm::fvec3{-0.07f, 0.0f, 0.0f});
       uploadView();
-  }
-  else if (key == GLFW_KEY_D  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
+    }
+    //moving right
+    else if (key == GLFW_KEY_D  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
       m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.07f, 0.0f, 0.0f});
       uploadView();
-  }
+    }
 }
 
 //handle delta mouse movement input
