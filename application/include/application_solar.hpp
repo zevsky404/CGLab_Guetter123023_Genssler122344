@@ -31,6 +31,7 @@ class ApplicationSolar : public Application {
   void initializeEnterpriseGeometry();
   void initializeStarGeometry();
   void initializeOrbitGeometry();
+  void initializeGeometry();
   // update uniform values
   void uploadUniforms();
   // upload projection matrix

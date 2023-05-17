@@ -56,7 +56,7 @@ SceneGraph::~SceneGraph() = default;
 /// setup the scene graph of the solar system
 /// \param planet_model
 /// \return scene graph
-SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
+SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_objects) {
     //initialize empty scene graph
     SceneGraph sceneGraph{};
 
@@ -68,13 +68,13 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
     //initialize sun as a point light
     auto sun_light_node = std::make_shared<PointLightNode>(root,"Sun-Holder",glm::vec3{0.0f,0.0f,0.0f},1.0f);
     //initialize geometry node for sun
-    auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Sun-Geometry", model_objects[0]);
+    auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Sun-Geometry", model_objects.at("planet-object"));
     //add geometry node as child to sun node
     sun_light_node->addChild(sun_geometry_node);
     //add sun node as child to root
     root->addChild(sun_light_node);
 
-    auto star_geometry = std::make_shared<GeometryNode>(root, "Star-Geometry", model_objects[2]);
+    auto star_geometry = std::make_shared<GeometryNode>(root, "Star-Geometry", model_objects.at("stars-object"));
     root->addChild(star_geometry);
 
     /*std::shared_ptr<CameraNode> camera = std::make_shared<CameraNode>(root,"camera");
@@ -84,13 +84,13 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
     //for all planets do
     for (size_t i = 0; i <= PLANET_NAMES.size() - 1; ++i) {
         //initialize orbit as geometry node
-        auto orbit_geometry = std::make_shared<GeometryNode>(sun_light_node, "Orbit", model_objects[3]);
+        auto orbit_geometry = std::make_shared<GeometryNode>(sun_light_node, "Orbit", model_objects.at("orbit-object"));
         sun_light_node->addChild(orbit_geometry);
         orbit_geometry->scale(PLANET_DISTANCES[i]);
         //initialize planet as a node
         auto planet_node = std::make_shared<Node>(sun_light_node, PLANET_NAMES[i] + "-Holder");
         //initialize geometry node for said planet
-        auto geometry_node = std::make_shared<GeometryNode>(planet_node, PLANET_NAMES[i] + "-Geometry", model_objects[0]);
+        auto geometry_node = std::make_shared<GeometryNode>(planet_node, PLANET_NAMES[i] + "-Geometry", model_objects.at("planet-object"));
         //add geometry node as a child to planet node
         planet_node->addChild(geometry_node);
         //add planet as a child to sun node
@@ -105,13 +105,13 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
 
     //get node of earth
     std::shared_ptr<Node> earth_node = sun_light_node->getChild("Earth-Holder");
-    auto orbit_geometry_moon = std::make_shared<GeometryNode>(earth_node, "Orbit", model_objects[3]);
+    auto orbit_geometry_moon = std::make_shared<GeometryNode>(earth_node, "Orbit", model_objects.at("orbit-object"));
     earth_node->addChild(orbit_geometry_moon);
     orbit_geometry_moon->scale(2.0);
     //initialize moon node
     std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Moon-Holder");
     //initialize moon geometry node
-    std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Moon-Geometry", model_objects[0]);
+    std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Moon-Geometry", model_objects.at("planet-object"));
 
     //moon_node->translate(glm::vec3{0.0f,0.0f,-2.0f});
     //add geometry node as child to moon node
@@ -129,13 +129,13 @@ SceneGraph setupSolarSystem(std::vector<model_object> const& model_objects) {
 
     //get jupiter node
     std::shared_ptr<Node> jupiter_node = sun_light_node->getChild("Jupiter-Holder");
-    auto orbit_geometry_jupiter = std::make_shared<GeometryNode>(jupiter_node, "Orbit", model_objects[3]);
+    auto orbit_geometry_jupiter = std::make_shared<GeometryNode>(jupiter_node, "Orbit", model_objects.at("orbit-object"));
     jupiter_node->addChild(orbit_geometry_jupiter);
     orbit_geometry_jupiter->scale(2.0);
     //initialise enterprise node
     std::shared_ptr<Node> enterprise_node = std::make_shared<Node>(earth_node,"Enterprise-Holder");
     // initialise enterprise geometry node
-    std::shared_ptr<GeometryNode> enterprise_geometry = std::make_shared<GeometryNode>(enterprise_node, "Enterprise-Geometry", model_objects[1]);
+    std::shared_ptr<GeometryNode> enterprise_geometry = std::make_shared<GeometryNode>(enterprise_node, "Enterprise-Geometry", model_objects.at("enterprise-object"));
 
     enterprise_node->addChild(enterprise_geometry);
     jupiter_node->addChild(enterprise_node);
