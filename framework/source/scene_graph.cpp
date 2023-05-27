@@ -66,9 +66,9 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     sceneGraph.setRoot(root);
 
     //initialize sun as a point light
-    auto sun_light_node = std::make_shared<PointLightNode>(root,"Sun-Holder",glm::vec3{0.0f,0.0f,0.0f},1.0f);
+    auto sun_light_node = std::make_shared<PointLightNode>(root,"Planet-Sun-Holder",glm::vec3{0.0f,0.0f,0.0f},1.0f);
     //initialize geometry node for sun
-    auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Sun-Geometry", model_objects.at("planet-object"));
+    auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Planet-Sun-Geometry", model_objects.at("planet-object"));
     //add geometry node as child to sun node
     sun_light_node->addChild(sun_geometry_node);
     //add sun node as child to root
@@ -84,13 +84,17 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     //for all planets do
     for (size_t i = 0; i <= PLANET_NAMES.size() - 1; ++i) {
         //initialize orbit as geometry node
-        auto orbit_geometry = std::make_shared<GeometryNode>(sun_light_node, "Orbit", model_objects.at("orbit-object"));
+        auto orbit_geometry = std::make_shared<GeometryNode>(sun_light_node, "Orbit",
+                                                             model_objects.at("orbit-object"));
         sun_light_node->addChild(orbit_geometry);
         orbit_geometry->scale(PLANET_DISTANCES[i]);
         //initialize planet as a node
-        auto planet_node = std::make_shared<Node>(sun_light_node, PLANET_NAMES[i] + "-Holder");
+        auto planet_node = std::make_shared<Node>(sun_light_node, "Planet-" + PLANET_NAMES[i] + "-Holder", PLANET_COLOR[i]);
         //initialize geometry node for said planet
-        auto geometry_node = std::make_shared<GeometryNode>(planet_node, PLANET_NAMES[i] + "-Geometry", model_objects.at("planet-object"));
+        auto geometry_node = std::make_shared<GeometryNode>(planet_node, "Planet-" + PLANET_NAMES[i] + "-Geometry",
+                                                            model_objects.at("planet-object"), PLANET_COLOR[i]);
+
+        printf("Planet color of %s: %f, %f, %f \n", PLANET_NAMES[i].c_str(), PLANET_COLOR[i].x, PLANET_COLOR[i].y, PLANET_COLOR[i].z);
         //add geometry node as a child to planet node
         planet_node->addChild(geometry_node);
         //add planet as a child to sun node
@@ -104,14 +108,14 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     //_______MOON SETUP________
 
     //get node of earth
-    std::shared_ptr<Node> earth_node = sun_light_node->getChild("Earth-Holder");
+    std::shared_ptr<Node> earth_node = sun_light_node->getChild("Planet-Earth-Holder");
     auto orbit_geometry_moon = std::make_shared<GeometryNode>(earth_node, "Orbit", model_objects.at("orbit-object"));
     earth_node->addChild(orbit_geometry_moon);
     orbit_geometry_moon->scale(2.0);
     //initialize moon node
-    std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Moon-Holder");
+    std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Planet-Moon-Holder");
     //initialize moon geometry node
-    std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Moon-Geometry", model_objects.at("planet-object"));
+    std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Planet-Moon-Geometry", model_objects.at("planet-object"));
 
     //moon_node->translate(glm::vec3{0.0f,0.0f,-2.0f});
     //add geometry node as child to moon node
@@ -128,7 +132,7 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     //_______ENTERPRISE SETUP__________
 
     //get jupiter node
-    std::shared_ptr<Node> jupiter_node = sun_light_node->getChild("Jupiter-Holder");
+    std::shared_ptr<Node> jupiter_node = sun_light_node->getChild("Planet-Jupiter-Holder");
     auto orbit_geometry_jupiter = std::make_shared<GeometryNode>(jupiter_node, "Orbit", model_objects.at("orbit-object"));
     jupiter_node->addChild(orbit_geometry_jupiter);
     orbit_geometry_jupiter->scale(2.0);

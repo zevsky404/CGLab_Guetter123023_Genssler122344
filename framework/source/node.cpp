@@ -18,15 +18,15 @@
 #include <utility>
 
 std::vector<std::pair<std::string, float>> PLANET_REVOLUTION {
-        std::make_pair("Mercury-Holder", 0.04f),
-        std::make_pair("Venus-Holder", 0.03f),
-        std::make_pair("Earth-Holder", 0.01f),
-        std::make_pair("Mars-Holder", 0.009f),
-        std::make_pair("Jupiter-Holder", 0.006f),
-        std::make_pair("Saturn-Holder", 0.003f),
-        std::make_pair("Uranus-Holder", 0.001f),
-        std::make_pair("Neptune-Holder", 0.0009f),
-        std::make_pair("Pluto-Holder", 0.0006f)
+        std::make_pair("Planet-Mercury-Holder", -0.04f),
+        std::make_pair("Planet-Venus-Holder", 0.03f),
+        std::make_pair("Planet-Earth-Holder", 0.01f),
+        std::make_pair("Planet-Mars-Holder", 0.009f),
+        std::make_pair("Planet-Jupiter-Holder", -0.006f),
+        std::make_pair("Planet-Saturn-Holder", 0.003f),
+        std::make_pair("Planet-Uranus-Holder", -0.001f),
+        std::make_pair("Planet-Neptune-Holder", 0.0009f),
+        std::make_pair("Planet-Pluto-Holder", 0.0006f)
 };
 
 
@@ -177,7 +177,7 @@ void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, gl
     //set local Transformation Matrix
     setLocalTransform(rotation_mat * getLocalTransform());
     // set local transform of moon separately so it spins around earth
-    if (name_ == "Moon-Holder") {
+    if (name_ == "Planet-Moon-Holder") {
         setLocalTransform(moon_rotation * getLocalTransform());
     }
 
@@ -209,6 +209,18 @@ void Node::rotate(float angle){
 /// \param scale
 void Node::scale(float scale){
     local_transform_=glm::scale(local_transform_, glm::vec3{scale,scale,scale});
+}
+
+const glm::vec3 &Node::getColor() const {
+    return color_;
+}
+
+void Node::setColor(const glm::vec3 &color) {
+    glm::vec3 rgbColor{color};
+    rgbColor.x = color.x / 255;
+    rgbColor.y = color.y / 255;
+    rgbColor.z = color.z / 255;
+    color_ = rgbColor;
 }
 
 /*void Node::applyFunction(const std::function<void(Node)> &functionObject) {

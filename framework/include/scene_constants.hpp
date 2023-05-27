@@ -19,18 +19,6 @@ std::vector<std::string> PLANET_NAMES {
         "Pluto"
 };
 
-std::vector<std::string> PLANET_GEOMETRY_NAMES {
-        "Mercury-Geometry",
-        "Venus-Geometry",
-        "Earth-Geometry",
-        "Mars-Geometry",
-        "Jupiter-Geometry",
-        "Saturn-Geometry",
-        "Uranus-Geometry",
-        "Neptune-Geometry",
-        "Pluto-Geometry"
-};
-
 std::vector<float> PLANET_SIZES {
     0.2f,
     0.4f,
@@ -68,18 +56,23 @@ std::vector<float> PLANET_ROTATION {
 
 };
 
-
+std::vector<glm::vec3> PLANET_COLOR {
+        glm::vec3(87,103,180),
+        glm::vec3(173,141,84),
+        glm::vec3(156,87,0),
+        glm::vec3(193,68,14),
+        glm::vec3(148,105,86),
+        glm::vec3(244,165,135),
+        glm::vec3(98,174,231),
+        glm::vec3(43,55,139),
+        glm::vec3(150,133,112)
+};
 
 #pragma endregion
 
-#pragma region Moons
-std::vector<std::string> MOON_NAMES {
-        "Moon-Holder"
-};
 
-std::vector<std::string> MOON_GEOMETRY_NAMES {
-        "Moon-Geometry"
-};
+
+#pragma region Moons
 
 std::vector<model> MOON_GEOMETRY {
 
@@ -88,17 +81,8 @@ std::vector<model> MOON_GEOMETRY {
 #pragma endregion
 
 #pragma region Sun
-std::vector<std::string> SUN_NAMES {
-        "Sun-Holder"
-};
 
-std::vector<std::string> SUN_GEOMETRY_NAMES {
-        "Sun-Geometry"
-};
-
-std::vector<model> SUN_GEOMETRY {
-
-};
+glm::vec3 SUN_COLOR = glm::vec3(255,249,0);
 
 #pragma endregion
 
