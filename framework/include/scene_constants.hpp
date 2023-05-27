@@ -3,7 +3,6 @@
 
 #include "model.hpp"
 #include <ostream>
-//#include
 
 
 
@@ -75,7 +74,9 @@ std::vector<glm::vec3> PLANET_COLOR {
 
 #pragma region Moons
 
-glm::vec3 MOON_COLOR = glm::vec3(227,199,163);
+std::vector<model> MOON_GEOMETRY {
+
+};
 
 #pragma endregion
 
