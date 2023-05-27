@@ -14,18 +14,27 @@ public:
     GeometryNode() = default;
 
     GeometryNode(std::shared_ptr<Node> parent, std::string const& name):
-        Node::Node(std::move(parent), name),
-        geometry_{} {};
+    Node::Node(std::move(parent), name),
+    geometry_{}
+    {};
 
     GeometryNode(std::shared_ptr<Node> parent, std::string const& name, model_object geometry):
-        Node::Node(std::move(parent), name),
-        geometry_{geometry} {
-    };
+    Node::Node(std::move(parent), name),
+    geometry_{geometry}
+    {};
+
+    GeometryNode(std::shared_ptr<Node> parent, std::string const& name, model_object geometry, glm::vec3 color):
+    Node::Node(std::move(parent), name, color),
+    geometry_{geometry}
+    {};
 
     //get geometry variable
     const model_object &getGeometry() const;
     //set geometry variable
     void setGeometry(const model_object &geometry);
+
+    void renderPlanet(const std::map<std::string, shader_program> &m_shaders,
+                      const glm::mat4 &m_view_transform) const;
 
     void renderStars(const std::map<std::string, shader_program> &m_shaders,
                                    const glm::mat4 &m_view_transform) const;

@@ -32,6 +32,7 @@ protected:
     int depth_ = 0;
     glm::mat4 local_transform_;
     glm::mat4 world_transform_;
+    glm::vec3 color_;
 
 public:
     //default constructor
@@ -44,7 +45,19 @@ public:
     path_{},
     depth_{},
     local_transform_{},
-    world_transform_{}
+    world_transform_{},
+    color_{0.5, 0.5, 0.5}
+    {};
+
+    Node(std::shared_ptr<Node> parent, std::string name, glm::vec3 const& color):
+    parent_{std::move(parent)},
+    children_{},
+    name_{std::move(name)},
+    path_{},
+    depth_{},
+    local_transform_{},
+    world_transform_{},
+    color_{color.x / 255, color.y / 255, color.z / 255}
     {};
 
     //get parent node
@@ -101,6 +114,10 @@ public:
     void rotate(float angle);
 
     void scale(float scale);
+
+    const glm::vec3 &getColor() const;
+
+    void setColor(const glm::vec3 &color);
 
     //void applyFunction(std::function<void(Node)> const& functionObject);
 
