@@ -278,7 +278,7 @@ void ApplicationSolar::initializeOrbitGeometry() {
 
     std::vector<float> segment_points;
     for (int i = 0; i < LINE_SEGMENT_COUNT; ++i) {
-        float angle = 2 * (float)M_PI * (float)i / 100;
+        float angle = 2 * (float)M_PI * (float)i / LINE_SEGMENT_COUNT;
         segment_points.push_back((float)sin(angle));
         segment_points.push_back(0);
         segment_points.push_back((float)cos(angle));
