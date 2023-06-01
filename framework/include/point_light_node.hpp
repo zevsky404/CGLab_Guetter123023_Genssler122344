@@ -21,16 +21,13 @@ public:
             LightIntensity_{light_intensity} {};
 
     const glm::vec3 &getLightColour() const;
-
     void setLightColour(const glm::vec3 &lightColour);
 
     float getLightIntensity() const;
     void setLightIntensity(float lightIntensity);
 
-    //void renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform);
-
 private:
-    glm::vec3 LightColour_;
+    glm::vec3 LightColour_ = {1.0f, 1.0f, 1.0f};
     float LightIntensity_ = 1.0f;
 };
 

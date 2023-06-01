@@ -11,6 +11,7 @@
 // self-written classes
 #include "scene_graph.hpp"
 #include "node.hpp"
+#include "point_light_node.hpp"
 //#include "geometry_node.hpp"
 
 // OpenGL
@@ -72,6 +73,19 @@ ApplicationSolar::~ApplicationSolar() {
 
 // renders the entire scene graph starting from the root
 void ApplicationSolar::render() const {
+    std::shared_ptr<PointLightNode> sun_light = std::static_pointer_cast<PointLightNode>(sceneGraph.getRoot()->getChild("Planet-Sun-Holder"));
+
+    gl::glUniform3fv(m_shaders.at("planet").u_locs.at("LightColor"),
+                     1, glm::value_ptr(sun_light->getLightColour()));
+
+    gl::glUniform3fv(m_shaders.at("planet").u_locs.at("LightPosition"),
+                    1, glm::value_ptr(sun_light->getWorldTransform()[3]));
+
+    gl::glUniform1f(m_shaders.at("planet").u_locs.at("LightIntensity"),
+                    sun_light->getLightIntensity());
+
+
+
     sceneGraph.getRoot()->renderNode(m_shaders, m_view_transform);
 }
 
