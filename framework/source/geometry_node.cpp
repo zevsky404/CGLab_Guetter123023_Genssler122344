@@ -19,12 +19,12 @@ void GeometryNode::setGeometry(const model_object &geometry) {
 
 void GeometryNode::renderPlanet(const std::map<std::string, shader_program> &m_shaders,
                                 const glm::mat4 &m_view_transform) const {
+
     // bind shader to upload uniforms
     glUseProgram(m_shaders.at("planet").handle);
     // rotate planets around own y-axis
     glm::fmat4 model_matrix = getWorldTransform() * getLocalTransform();
     model_matrix = model_matrix * glm::rotate(glm::fmat4{}, float(glfwGetTime()), glm::fvec3{0.0f, 1.0f, 0.0f});
-
     glUniformMatrix4fv(m_shaders.at("planet").u_locs.at("ModelMatrix"),
                        1, GL_FALSE, glm::value_ptr(model_matrix));
 
@@ -34,6 +34,9 @@ void GeometryNode::renderPlanet(const std::map<std::string, shader_program> &m_s
                            1, GL_FALSE, glm::value_ptr(normal_matrix));
 
     gl::glUniform3f(m_shaders.at("planet").u_locs.at("PlanetColor"),
+                    color_.x, color_.y, color_.z);
+
+    gl::glUniform3f(m_shaders.at("planet").u_locs.at("AmbientColor"),
                     color_.x, color_.y, color_.z);
 
     // bind the VAO to draw
