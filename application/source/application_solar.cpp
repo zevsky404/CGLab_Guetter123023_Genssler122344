@@ -75,6 +75,7 @@ ApplicationSolar::~ApplicationSolar() {
 void ApplicationSolar::render() const {
     std::shared_ptr<PointLightNode> sun_light = std::static_pointer_cast<PointLightNode>(sceneGraph.getRoot()->getChild("Planet-Sun-Holder"));
 
+    glUseProgram(m_shaders.at("planet").handle);
     gl::glUniform3fv(m_shaders.at("planet").u_locs.at("LightColor"),
                      1, glm::value_ptr(sun_light->getLightColour()));
 
