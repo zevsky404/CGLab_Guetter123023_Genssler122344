@@ -169,20 +169,18 @@ std::ostream& operator<<(std::ostream &os, const Node &node) {
 /// \param m_view_transform
 void Node::renderNode(std::map<std::string, shader_program> const& m_shaders, glm::mat4 const& m_view_transform) {
     //get value to compute speed of revolution around the sun
-    float revolution_value = std::find_if(PLANET_REVOLUTION.begin(), PLANET_REVOLUTION.end(), [&] (std::pair<std::string, float> const& pair) {return name_ == pair.first; })->second;
+    float revolution_value = std::find_if(PLANET_REVOLUTION.begin(), PLANET_REVOLUTION.end(),
+                                          [&] (std::pair<std::string, float> const& pair) {return name_ == pair.first; })->second;
     //compute rotation value
     glm::mat4 rotation_mat = glm::rotate(glm::fmat4{}, glm::radians(revolution_value), glm::fvec3{0.0f, 1.0f, 0.0f});
-    glm::mat4 moon_rotation = glm::rotate(glm::fmat4{}, glm::radians(0.01f), glm::fvec3{0.0f, 1.0f, 0.0f});
-    glm::mat4 enterprise_rotation = glm::rotate(glm::fmat4{}, glm::radians(-0.01f), glm::fvec3{0.0f, 1.0f, 0.0f});
-    //set local Transformation Matrix
-    setLocalTransform(rotation_mat * getLocalTransform());
-    // set local transform of moon separately so it spins around earth
-    if (name_ == "Planet-Moon-Holder") {
-        setLocalTransform(moon_rotation * getLocalTransform());
-    }
+    glm::mat4 small_body_rotation = glm::rotate(glm::fmat4{}, glm::radians(0.01f), glm::fvec3{0.0f, 1.0f, 0.0f});
 
-    if (name_ == "Enterprise-Holder") {
-        setLocalTransform(moon_rotation * getLocalTransform());
+    // set local transform of moon separately so it spins around earth
+    if (name_ == "Planet-Moon-Holder" || name_ == "Enterprise-Holder") {
+        setLocalTransform(small_body_rotation * getLocalTransform());
+    } else {
+        //set local Transformation Matrix
+        setLocalTransform(rotation_mat * getLocalTransform());
     }
 
     //call function also for children of node

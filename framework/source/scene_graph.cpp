@@ -68,7 +68,8 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     //initialize sun as a point light
     auto sun_light_node = std::make_shared<PointLightNode>(root,"Planet-Sun-Holder",glm::vec3{0.0f,0.0f,0.0f},1.0f);
     //initialize geometry node for sun
-    auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Planet-Sun-Geometry", model_objects.at("planet-object"));
+    auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Planet-Sun-Geometry",
+                                                            model_objects.at("planet-object"), SUN_COLOR);
     //add geometry node as child to sun node
     sun_light_node->addChild(sun_geometry_node);
     //add sun node as child to root
@@ -93,8 +94,7 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
         //initialize geometry node for said planet
         auto geometry_node = std::make_shared<GeometryNode>(planet_node, "Planet-" + PLANET_NAMES[i] + "-Geometry",
                                                             model_objects.at("planet-object"), PLANET_COLOR[i]);
-
-        printf("Planet color of %s: %f, %f, %f \n", PLANET_NAMES[i].c_str(), PLANET_COLOR[i].x, PLANET_COLOR[i].y, PLANET_COLOR[i].z);
+        
         //add geometry node as a child to planet node
         planet_node->addChild(geometry_node);
         //add planet as a child to sun node
