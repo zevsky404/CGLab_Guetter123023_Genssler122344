@@ -83,6 +83,7 @@ std::vector<model> MOON_GEOMETRY {
 #pragma region Sun
 
 glm::vec3 SUN_COLOR = glm::vec3(255,249,0);
+//glm::vec3 SUN_COLOR = glm::vec3(255, 255, 255);
 
 #pragma endregion
 

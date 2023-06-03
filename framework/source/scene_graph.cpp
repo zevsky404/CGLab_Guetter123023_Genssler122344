@@ -66,7 +66,7 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     sceneGraph.setRoot(root);
 
     //initialize sun as a point light
-    auto sun_light_node = std::make_shared<PointLightNode>(root,"Planet-Sun-Holder",glm::vec3{0.0f,0.0f,0.0f},1.0f);
+    auto sun_light_node = std::make_shared<PointLightNode>(root,"Planet-Sun-Holder",glm::vec3{1.0f,1.0f,1.0f},10.0f);
     //initialize geometry node for sun
     auto sun_geometry_node = std::make_shared<GeometryNode>(sun_light_node,"Planet-Sun-Geometry",
                                                             model_objects.at("planet-object"), SUN_COLOR);

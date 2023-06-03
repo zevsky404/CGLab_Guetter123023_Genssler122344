@@ -23,7 +23,7 @@ void main() {
   float SpecularAngle = max(dot(HalfwayVector, pass_Normal), 0.0);
 
   float SpecularCoefficient = pow(SpecularAngle, Shininess);
-  float DiffuseCoefficient = 1.0;
+  float DiffuseCoefficient = 0.1;
 
   vec3 BlinnPhong = PlanetColor * AmbientColor +
                       PlanetColor * Lambertian * LightColor * LightIntensity / Distance +

@@ -86,7 +86,6 @@ void ApplicationSolar::render() const {
                     sun_light->getLightIntensity());
 
 
-
     sceneGraph.getRoot()->renderNode(m_shaders, m_view_transform);
 }
 
