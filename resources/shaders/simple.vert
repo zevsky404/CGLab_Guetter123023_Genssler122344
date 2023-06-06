@@ -11,11 +11,16 @@ uniform mat4 ProjectionMatrix;
 uniform mat4 NormalMatrix;
 
 out vec3 pass_Normal;
-out vec3 pass_Position;
+out vec4 pass_Position;
 
 void main(void)
 {
-	pass_Position = vec3(ModelMatrix * vec4(in_Position, 1));
-	gl_Position = (ProjectionMatrix  * ViewMatrix * ModelMatrix) * vec4(in_Position, 1.0);
+	//pass_Position = vec3(ModelMatrix * vec4(in_Position, 1));
+	//gl_Position = (ProjectionMatrix  * ViewMatrix * ModelMatrix) * vec4(in_Position, 1.0);
+	pass_Position = ModelMatrix * vec4(in_Position, 1.0);
+	gl_Position = (ProjectionMatrix * ViewMatrix) * pass_Position;
 	pass_Normal = normalize(NormalMatrix * vec4(in_Normal, 0.0)).xyz;
+
+
+
 }
