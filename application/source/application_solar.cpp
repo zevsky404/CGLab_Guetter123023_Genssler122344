@@ -73,6 +73,7 @@ ApplicationSolar::~ApplicationSolar() {
 
 // renders the entire scene graph starting from the root
 void ApplicationSolar::render() const {
+    // things that cannot be handled in geometry node, as it requires information about scene are handled here
     std::shared_ptr<PointLightNode> sun_light = std::static_pointer_cast<PointLightNode>(sceneGraph.getRoot()->getChild("Planet-Sun-Holder"));
 
     glUseProgram(m_shaders.at("planet").handle);
