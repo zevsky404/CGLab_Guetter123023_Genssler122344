@@ -40,7 +40,7 @@ void main() {
   // caluclation of three different light components
   vec3 Ambient = PlanetColor * AmbientColor * 1.5f;
   vec3 Diffuse = PlanetColor * Lambertian * LightColor * LightIntensity / Distance;
-  vec3 Specular = vec3(1.0) * SpecularCoefficient * LightColor * LightIntensity / Distance;
+  vec3 Specular = PlanetColor * SpecularCoefficient * LightColor * LightIntensity / Distance;
 
   vec3 BlinnPhong = Ambient + Diffuse + Specular;
 
