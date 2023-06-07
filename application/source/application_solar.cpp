@@ -85,7 +85,6 @@ void ApplicationSolar::render() const {
     gl::glUniform1f(m_shaders.at("planet").u_locs.at("LightIntensity"),
                     sun_light->getLightIntensity());
 
-
     sceneGraph.getRoot()->renderNode(m_shaders, m_view_transform);
 }
 
@@ -156,6 +155,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["LightPosition"] = -1;
     m_shaders.at("planet").u_locs["LightColor"] = -1;
     m_shaders.at("planet").u_locs["Cel"] = -1;
+    m_shaders.at("planet").u_locs["CameraPosition"] = -1;
 
     m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/orbit.vert"},
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
