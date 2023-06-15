@@ -23,8 +23,11 @@ pixel_data file(std::string const& file_name) {
   uint8_t* data_ptr;
   int width = 0;
   int height = 0;
-  int format = STBI_default;
-  data_ptr = stbi_load(file_name.c_str(), &width, &height, &format, STBI_rgb_alpha);
+  //int format = STBI_default;
+  int format = STBI_rgb;
+  int req_comp = STBI_rgb;
+  data_ptr = stbi_load(file_name.c_str(), &width, &height, &format, req_comp);
+  //data_ptr = stbi_load(file_name.c_str(), &width, &height, &format, 0);
 
   if(!data_ptr) {
     throw std::logic_error(std::string{"stb_image: "} + stbi_failure_reason());

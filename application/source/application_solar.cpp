@@ -49,7 +49,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
     };
 
     // create graph hierarchy
-    sceneGraph = setupSolarSystem(model_objects);
+    sceneGraph = setupSolarSystem(model_objects, resource_path);
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -157,6 +157,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["LightColor"] = -1;
     m_shaders.at("planet").u_locs["Cel"] = -1;
     m_shaders.at("planet").u_locs["CameraPosition"] = -1;
+    m_shaders.at("planet").u_locs["TextureSampler"] = -1;
 
     m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/orbit.vert"},
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
@@ -188,7 +189,7 @@ void ApplicationSolar::initializeGeometry() {
 }
 # pragma region GEOMETRY INIT
 void ApplicationSolar::initializePlanetGeometry() {
-    model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL);
+    model planet_model = model_loader::obj(m_resource_path + "models/sphere.obj", model::NORMAL | model::TEXCOORD);
 
     // generate vertex array object
     glGenVertexArrays(1, &planet_object.vertex_AO);
@@ -210,6 +211,9 @@ void ApplicationSolar::initializePlanetGeometry() {
     glEnableVertexAttribArray(1);
     // second attribute is 3 floats with no offset & stride
     glVertexAttribPointer(1, model::NORMAL.components, model::NORMAL.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::NORMAL]);
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, model::TEXCOORD.components, model::TEXCOORD.type, GL_FALSE, planet_model.vertex_bytes, planet_model.offsets[model::TEXCOORD]);
 
     // generate generic buffer
     glGenBuffers(1, &planet_object.element_BO);

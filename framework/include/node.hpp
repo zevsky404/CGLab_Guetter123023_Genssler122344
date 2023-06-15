@@ -33,6 +33,7 @@ protected:
     glm::mat4 local_transform_;
     glm::mat4 world_transform_;
     glm::vec3 color_;
+    texture_object texture_;
 
 public:
     //default constructor
