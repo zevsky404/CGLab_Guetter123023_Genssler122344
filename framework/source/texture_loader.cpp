@@ -24,7 +24,8 @@ pixel_data file(std::string const& file_name) {
   int width = 0;
   int height = 0;
   int format = STBI_default;
-  data_ptr = stbi_load(file_name.c_str(), &width, &height, &format, STBI_rgb_alpha);
+  //data_ptr = stbi_load(file_name.c_str(), &width, &height, &format, STBI_rgb_alpha);
+    data_ptr = stbi_load(file_name.c_str(), &width, &height, &format, 0);
 
   if(!data_ptr) {
     throw std::logic_error(std::string{"stb_image: "} + stbi_failure_reason());
@@ -56,7 +57,7 @@ pixel_data file(std::string const& file_name) {
   std::vector<uint8_t> texture_data(width * height * num_components);
   // copy data to vector
   std::memcpy(&texture_data[0], data_ptr, texture_data.size());
-  stbi_image_free(data_ptr);
+  //stbi_image_free(data_ptr);
 
   return pixel_data{texture_data, pixel_format, GL_UNSIGNED_BYTE, std::size_t(width), std::size_t(height)};
 }

@@ -7,6 +7,7 @@
 #include "geometry_node.hpp"
 #include "scene_constants.hpp"
 #include "point_light_node.hpp"
+#include "texture_loader.hpp"
 
 /// get name of the scene
 /// \return name of scene
@@ -45,20 +46,34 @@ std::ostream &operator<<(std::ostream &os, const SceneGraph &graph) {
     return os;
 }
 
-
-/*void SceneGraph::applyFunction(VoidFunctionObject const& functionObject) const {
-    functionObject(root_);
-
-}*/
-
 SceneGraph::~SceneGraph() = default;
+
+texture_object setupTexture(const std::string &textureFileName) {
+    pixel_data pixelData = texture_loader::file(textureFileName);
+
+    texture_object textureObject{};
+    glGenTextures(1, &textureObject.handle);
+    glBindTexture(GL_TEXTURE_2D, textureObject.handle);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, pixelData.channels, (int)pixelData.width, (int)pixelData.height,
+                 0, pixelData.channels, pixelData.channel_type, &pixelData.pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //stbi_image_free(pixelData);
+    return textureObject;
+}
 
 /// setup the scene graph of the solar system
 /// \param planet_model
 /// \return scene graph
-SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_objects) {
+SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_objects, std::string const& resource_path) {
     //initialize empty scene graph
     SceneGraph sceneGraph{};
+    std::string texturePath = resource_path + "textures/";
 
     //initialize root
     std::shared_ptr<Node> root = std::make_shared<Node>(Node{nullptr, "root"});
@@ -94,6 +109,8 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
         //initialize geometry node for said planet
         auto geometry_node = std::make_shared<GeometryNode>(planet_node, "Planet-" + PLANET_NAMES[i] + "-Geometry",
                                                             model_objects.at("planet-object"), PLANET_COLOR[i]);
+
+        geometry_node->setTexture(setupTexture(texturePath + "2k_mercury.jpg"));
         
         //add geometry node as a child to planet node
         planet_node->addChild(geometry_node);
@@ -116,6 +133,7 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     std::shared_ptr<Node> moon_node = std::make_shared<Node>(earth_node,"Planet-Moon-Holder");
     //initialize moon geometry node
     std::shared_ptr<GeometryNode> moon_geometry = std::make_shared<GeometryNode>(moon_node, "Planet-Moon-Geometry", model_objects.at("planet-object"));
+    moon_geometry->setTexture(setupTexture(texturePath + "2k_moon.jpg"));
 
     //moon_node->translate(glm::vec3{0.0f,0.0f,-2.0f});
     //add geometry node as child to moon node

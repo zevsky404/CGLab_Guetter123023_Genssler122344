@@ -49,7 +49,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
     };
 
     // create graph hierarchy
-    sceneGraph = setupSolarSystem(model_objects);
+    sceneGraph = setupSolarSystem(model_objects, resource_path);
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -157,6 +157,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["LightColor"] = -1;
     m_shaders.at("planet").u_locs["Cel"] = -1;
     m_shaders.at("planet").u_locs["CameraPosition"] = -1;
+    m_shaders.at("planet").u_locs["TextureSampler"] = -1;
 
     m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/orbit.vert"},
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
