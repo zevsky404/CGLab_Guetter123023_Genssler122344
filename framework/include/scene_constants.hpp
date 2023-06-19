@@ -68,6 +68,18 @@ std::vector<glm::vec3> PLANET_COLOR {
         glm::vec3(150,133,112)
 };
 
+std::vector<std::string> PLANET_TEXTURE {
+        "2k_mercury.jpg",
+        "2k_venus_surface.jpg",
+        "2k_earth_nightmap.jpg",
+        "2k_mars.jpg",
+        "2k_jupiter.jpg",
+        "2k_saturn.jpg",
+        "2k_uranus.jpg",
+        "2k_neptune.jpg",
+        "2k_earth_nightmap.jpg"
+};
+
 #pragma endregion
 
 

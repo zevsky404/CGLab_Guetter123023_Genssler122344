@@ -9,6 +9,7 @@
 #include "point_light_node.hpp"
 #include "texture_loader.hpp"
 
+
 /// get name of the scene
 /// \return name of scene
 const std::string &SceneGraph::getName() const {
@@ -56,11 +57,14 @@ texture_object setupTexture(const std::string &textureFileName) {
     glBindTexture(GL_TEXTURE_2D, textureObject.handle);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)pixelData.width, (int)pixelData.height,
-                 0, GL_RGB, GL_UNSIGNED_BYTE, &pixelData.pixels);
+                 0, GL_RGB, GL_UNSIGNED_BYTE, pixelData.ptr());
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+
 
     glBindTexture(GL_TEXTURE_2D, 0);
     //stbi_image_free(pixelData);
