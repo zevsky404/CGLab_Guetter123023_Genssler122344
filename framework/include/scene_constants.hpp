@@ -77,7 +77,7 @@ std::vector<std::string> PLANET_TEXTURE {
         "2k_saturn.jpg",
         "2k_uranus.jpg",
         "2k_neptune.jpg",
-        "2k_earth_nightmap.jpg"
+        "2k_pluto_1.jpg"
 };
 
 #pragma endregion
@@ -86,9 +86,7 @@ std::vector<std::string> PLANET_TEXTURE {
 
 #pragma region Moons
 
-std::vector<model> MOON_GEOMETRY {
-
-};
+std::string MOON_TEXTURE = "2k_moon.jpg";
 
 #pragma endregion
 
@@ -96,6 +94,8 @@ std::vector<model> MOON_GEOMETRY {
 
 glm::vec3 SUN_COLOR = glm::vec3(255,249,0);
 //glm::vec3 SUN_COLOR = glm::vec3(255, 255, 255);
+
+std::string SUN_TEXTURE = "2k_sun.jpg";
 
 #pragma endregion
 

@@ -151,7 +151,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
     m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
     m_shaders.at("planet").u_locs["PlanetColor"] = -1;
-    m_shaders.at("planet").u_locs["AmbientColor"] = -1;
+    //m_shaders.at("planet").u_locs["AmbientColor"] = -1;
     m_shaders.at("planet").u_locs["LightIntensity"] = -1;
     m_shaders.at("planet").u_locs["LightPosition"] = -1;
     m_shaders.at("planet").u_locs["LightColor"] = -1;
@@ -172,12 +172,20 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("stars").u_locs["ViewMatrix"] = -1;
     m_shaders.at("stars").u_locs["ProjectionMatrix"] = -1;
 
-    m_shaders.emplace("enterprise", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/enterprise.vert"},
-                                                {GL_FRAGMENT_SHADER, m_resource_path + "shaders/enterprise.frag"}}});
+    m_shaders.emplace("enterprise", shader_program{{{GL_VERTEX_SHADER,m_resource_path + "shaders/simple.vert"},
+                                                {GL_FRAGMENT_SHADER, m_resource_path + "shaders/simple.frag"}}});
     m_shaders.at("enterprise").u_locs["NormalMatrix"] = -1;
     m_shaders.at("enterprise").u_locs["ModelMatrix"] = -1;
     m_shaders.at("enterprise").u_locs["ViewMatrix"] = -1;
     m_shaders.at("enterprise").u_locs["ProjectionMatrix"] = -1;
+    m_shaders.at("enterprise").u_locs["PlanetColor"] = -1;
+    m_shaders.at("enterprise").u_locs["AmbientColor"] = -1;
+    m_shaders.at("enterprise").u_locs["LightIntensity"] = -1;
+    m_shaders.at("enterprise").u_locs["LightPosition"] = -1;
+    m_shaders.at("enterprise").u_locs["LightColor"] = -1;
+    m_shaders.at("enterprise").u_locs["Cel"] = -1;
+    m_shaders.at("enterprise").u_locs["CameraPosition"] = -1;
+    m_shaders.at("enterprise").u_locs["TextureSampler"] = -1;
 }
 
 // initialise all geometries
@@ -230,7 +238,7 @@ void ApplicationSolar::initializePlanetGeometry() {
 
 void ApplicationSolar::initializeEnterpriseGeometry() {
     // load model from file
-    model enterprise_model = model_loader::obj(m_resource_path + "models/USS_Enterprise_NCC-1701_7.obj", model::NORMAL);
+    model enterprise_model = model_loader::obj(m_resource_path + "models/USS_Enterprise_NCC-1701_7.obj", model::NORMAL | model::TEXCOORD);
 
     glGenVertexArrays(1, &enterprise_object.vertex_AO);
     glBindVertexArray(enterprise_object.vertex_AO);
@@ -238,11 +246,15 @@ void ApplicationSolar::initializeEnterpriseGeometry() {
     glGenBuffers(1, &enterprise_object.vertex_BO);
     glBindBuffer(GL_ARRAY_BUFFER, enterprise_object.vertex_BO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * enterprise_model.data.size(), enterprise_model.data.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
 
+    glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, model::POSITION.components, model::POSITION.type, GL_FALSE, enterprise_model.vertex_bytes, enterprise_model.offsets[model::POSITION]);
+
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, model::NORMAL.components, model::NORMAL.type, GL_FALSE, enterprise_model.vertex_bytes, enterprise_model.offsets[model::NORMAL]);
+
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, model::TEXCOORD.components, model::TEXCOORD.type, GL_FALSE, enterprise_model.vertex_bytes, enterprise_model.offsets[model::TEXCOORD]);
 
     glGenBuffers(1, &enterprise_object.element_BO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, enterprise_object.element_BO);
