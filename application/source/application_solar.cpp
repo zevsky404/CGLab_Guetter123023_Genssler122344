@@ -203,6 +203,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["Cel"] = -1;
     m_shaders.at("planet").u_locs["CameraPosition"] = -1;
     m_shaders.at("planet").u_locs["TextureSampler"] = -1;
+    m_shaders.at("planet").u_locs["NormalMap"] = -1;
 
     m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/orbit.vert"},
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
@@ -466,6 +467,15 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     else if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
         glUseProgram(m_shaders.at("planet").handle);
         glUniform1i(m_shaders.at("planet").u_locs.at("Cel"), true);
+    }
+    // change between usage of normal maps and no usage of normal maps
+    else if (key == GLFW_KEY_3 && action == GLFW_PRESS) {
+        glUseProgram(m_shaders.at("planet").handle);
+        glUniform1i(m_shaders.at("planet").u_locs.at("NormalMap"), false);
+    }
+    else if (key == GLFW_KEY_4 && action == GLFW_PRESS) {
+        glUseProgram(m_shaders.at("planet").handle);
+        glUniform1i(m_shaders.at("planet").u_locs.at("NormalMap"), true);
     }
 }
 
