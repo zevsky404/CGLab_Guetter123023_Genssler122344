@@ -102,9 +102,21 @@ std::string SUN_TEXTURE = "2k_sun.jpg";
 
 #pragma region Skybox
 
+std::vector<std::string> SKYBOX_FACES = {
+        "right.png",
+        "left.png",
+        "top.png",
+        "bottom.png",
+        "front.png",
+        "back.png"
+};
 
-
-
+std::vector<std::string> SKYBOX_VARIANTS = {
+        "skyboxes/skybox/",
+        "skyboxes/skybox_blue_orange/",
+        "skyboxes/skybox_lilac_grey/",
+        "skyboxes/skybox_lilac_orange/"
+};
 
 #pragma endregion
 

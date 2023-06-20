@@ -140,22 +140,24 @@ void GeometryNode::renderEnterprise(const std::map<std::string, shader_program> 
 /// \param m_view_transform cemara information
 void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_shaders,
                               const glm::mat4 &m_view_transform) {
-    // sorts out stars and orbit, as they need to be rendered differently from planets
     if (name_.find("Planet") != std::string::npos) {
         renderPlanet(m_shaders, m_view_transform);
     } else if (name_ == "Star-Geometry") {
         renderStars(m_shaders, m_view_transform);
-    }
-    else if (name_ == "Orbit") {
+    } else if (name_ == "Orbit") {
         renderOrbit(m_shaders, m_view_transform);
     } else if (name_ == "Enterprise-Geometry") {
         renderEnterprise(m_shaders, m_view_transform);
+    } else if (name_ == "Skybox-Geometry") {
+        renderSkybox(m_shaders, m_view_transform);
     }
 }
 
 void GeometryNode::renderSkybox(const std::map<std::string, shader_program> &m_shaders,
                                 const glm::mat4 &m_view_transform) const {
-    glm::mat4 view_matrix = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
+    glUseProgram(m_shaders.at("skybox").handle);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, texture_.handle);
+    glUniform1i(m_shaders.at("skybox").u_locs.at("TextureSampler"), 0);
 }
 

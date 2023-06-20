@@ -26,19 +26,18 @@ using namespace gl;
     int STAR_COUNT = 1000;
     int LINE_SEGMENT_COUNT = 100;
 
-float SKYBOX_VERTICES[] = {
-        //   Coordinates
-        -1.0f, -1.0f,  1.0f,       //        7--------6
-        1.0f, -1.0f,  1.0f,        //       /|       /|
-        1.0f, -1.0f, -1.0f,        //      4--------5 |
-        -1.0f, -1.0f, -1.0f,     //      | |      | |
-        -1.0f,  1.0f,  1.0f,    //      | 3------|-2
-        1.0f,  1.0f,  1.0f,     //      |/       |/
-        1.0f,  1.0f, -1.0f,     //      0--------1
+std::vector<GLfloat> SKYBOX_VERTICES = {
+        -1.0f, -1.0f,  1.0f,        //        7--------6
+        1.0f, -1.0f,  1.0f,         //       /|       /|
+        1.0f, -1.0f, -1.0f,         //      4--------5 |
+        -1.0f, -1.0f, -1.0f,        //      | |      | |
+        -1.0f,  1.0f,  1.0f,        //      | 3------|-2
+        1.0f,  1.0f,  1.0f,         //      |/       |/
+        1.0f,  1.0f, -1.0f,         //      0--------1
         -1.0f,  1.0f, -1.0f
 };
 
-unsigned int SKYBOX_INDICES[] = {
+std::vector<GLint> SKYBOX_INDICES = {
         // Right
         1, 2, 6,
         6, 5, 1,
@@ -59,14 +58,6 @@ unsigned int SKYBOX_INDICES[] = {
         6, 2, 3
 };
 
-std::vector<std::string> SKYBOX_FACES = {
-        "skyboxes/skybox_lilac_orange/right.png",
-        "skyboxes/skybox_lilac_orange/left.png",
-        "skyboxes/skybox_lilac_orange/top.png",
-        "skyboxes/skybox_lilac_orange/bottom.png",
-        "skyboxes/skybox_lilac_orange/front.png",
-        "skyboxes/skybox_lilac_orange/back.png"
-};
 #pragma endregion
 
 
@@ -76,6 +67,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,enterprise_object{}
  ,star_object{}
  ,orbit_object{}
+ ,skybox_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
  ,sceneGraph{}
@@ -89,7 +81,8 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
         std::make_pair("planet-object", planet_object),
         std::make_pair("stars-object", star_object),
         std::make_pair("orbit-object", orbit_object),
-        std::make_pair("enterprise-object", enterprise_object)
+        std::make_pair("enterprise-object", enterprise_object),
+        std::make_pair("skybox-object", skybox_object)
     };
 
     // create graph hierarchy
@@ -153,6 +146,10 @@ void ApplicationSolar::uploadView() {
     glUseProgram(m_shaders.at("enterprise").handle);
     glUniformMatrix4fv(m_shaders.at("enterprise").u_locs.at("ViewMatrix"), 1,
                        GL_FALSE, glm::value_ptr(view_matrix));
+
+    glUseProgram(m_shaders.at("skybox").handle);
+    glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ViewMatrix"), 1,
+                       GL_FALSE, glm::value_ptr(view_matrix));
 }
 
 void ApplicationSolar::uploadProjection() {
@@ -173,6 +170,10 @@ void ApplicationSolar::uploadProjection() {
 
     glUseProgram(m_shaders.at("enterprise").handle);
     glUniformMatrix4fv(m_shaders.at("enterprise").u_locs.at("ProjectionMatrix"),
+                       1, GL_FALSE, glm::value_ptr(m_view_projection));
+
+    glUseProgram(m_shaders.at("skybox").handle);
+    glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ProjectionMatrix"),
                        1, GL_FALSE, glm::value_ptr(m_view_projection));
 }
 
@@ -230,6 +231,14 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("enterprise").u_locs["Cel"] = -1;
     m_shaders.at("enterprise").u_locs["CameraPosition"] = -1;
     m_shaders.at("enterprise").u_locs["TextureSampler"] = -1;
+    m_shaders.at("enterprise").u_locs["NormalMap"] = -1;
+
+    m_shaders.emplace("skybox", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/skybox.vert"},
+                                                {GL_FRAGMENT_SHADER, m_resource_path + "shaders/skybox.frag"}}});
+    m_shaders.at("skybox").u_locs["ProjectionMatrix"] = -1;
+    m_shaders.at("skybox").u_locs["ViewMatrix"] = -1;
+    m_shaders.at("skybox").u_locs["TextureSampler"] = -1;
+
 }
 
 // initialise all geometries
@@ -371,7 +380,6 @@ void ApplicationSolar::initializeOrbitGeometry() {
 
     glGenBuffers(1, &orbit_object.vertex_BO);
     glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);
-
     glBufferData(GL_ARRAY_BUFFER, GLsizei(segment_points.size() * sizeof(float)),
                  segment_points.data(), GL_STATIC_DRAW);
 
@@ -392,43 +400,26 @@ void ApplicationSolar::initializeOrbitGeometry() {
 }
 
 void ApplicationSolar::initializeSkyboxGeometry() {
-    // Create VAO, VBO, and EBO for the skybox
-    unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
-    glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
-    glGenBuffers(1, &skyboxEBO);
-    glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glGenVertexArrays(1, &orbit_object.vertex_AO);
+    glBindVertexArray(orbit_object.vertex_AO);
+
+    glGenBuffers(1, &orbit_object.vertex_BO);
+    glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(SKYBOX_VERTICES), &SKYBOX_VERTICES, GL_STATIC_DRAW);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(SKYBOX_INDICES), &SKYBOX_INDICES, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
+
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+
+    glGenBuffers(1, &skybox_object.element_BO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skybox_object.element_BO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(SKYBOX_INDICES), &SKYBOX_INDICES, GL_STATIC_DRAW);
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    // Cycles through all the textures and attaches them to the cubemap object
-    for (std::string const& file_name : SKYBOX_FACES) {
-        pixel_data pixelData = texture_loader::file(m_resource_path + file_name);
-        texture_object textureObject{};
-        glGenTextures(1, &textureObject.handle);
-        glBindTexture(GL_TEXTURE_2D, textureObject.handle);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)pixelData.width, (int)pixelData.height,
-                     0, GL_RGB, GL_UNSIGNED_BYTE, pixelData.ptr());
-    }
-
-    // Creates the skybox texture object
-    unsigned int skybox_texture;
-    glGenTextures(1, &skybox_texture);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    skybox_object.draw_mode = GL_TRIANGLES;
+    skybox_object.num_elements = (GLsizei) SKYBOX_INDICES.size();
 }
 
 #pragma endregion

@@ -68,6 +68,31 @@ texture_object setupTexture(const std::string &textureFileName) {
     return textureObject;
 }
 
+texture_object setupSkybox(std::string const& variant) {
+    // Cycles through all the textures and attaches them to the skybox object
+    for (int i = 0; i <= 6; ++i) {
+        pixel_data pixelData = texture_loader::file(variant + SKYBOX_FACES[i]);
+        texture_object textureObject{};
+        glGenTextures(1, &textureObject.handle);
+        glBindTexture(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (unsigned int)i, textureObject.handle);
+
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + (unsigned int)i, 0, GL_RGB,
+                     (int)pixelData.width, (int)pixelData.height,
+                     0, GL_RGB, GL_UNSIGNED_BYTE, pixelData.ptr());
+    }
+
+    // Creates the skybox texture object
+    unsigned int skybox_texture;
+    glGenTextures(1, &skybox_texture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
+
 /// setup the scene graph of the solar system
 /// \param planet_model
 /// \return scene graph
@@ -80,6 +105,10 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     std::shared_ptr<Node> root = std::make_shared<Node>(Node{nullptr, "root"});
     //set root of scene graph
     sceneGraph.setRoot(root);
+
+    auto skybox_geometry = std::make_shared<GeometryNode>(root, "Skybox", model_objects.at("skybox-object"));
+    skybox_geometry->setTexture(setupSkybox(SKYBOX_VARIANTS[3]));
+    root->addChild(skybox_geometry);
 
     //initialize sun as a point light
     auto sun_light_node = std::make_shared<PointLightNode>(root,"Planet-Sun-Holder",glm::vec3{1.0f,1.0f,1.0f},4.0f);
