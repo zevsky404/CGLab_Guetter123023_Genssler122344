@@ -100,4 +100,13 @@ std::string SUN_TEXTURE = "2k_sun.jpg";
 #pragma endregion
 
 
+#pragma region Skybox
+
+
+
+
+
+#pragma endregion
+
+
 #endif //OPENGL_FRAMEWORK_SCENE_CONSTANTS_HPP

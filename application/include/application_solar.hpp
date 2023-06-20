@@ -31,8 +31,9 @@ class ApplicationSolar : public Application {
   void initializeEnterpriseGeometry();
   void initializeStarGeometry();
   void initializeOrbitGeometry();
+  void initializeSkyboxGeometry();
   void initializeGeometry();
-  texture_object initializeTextures(std::string const& textureFileName);
+  //texture_object initializeTextures(std::string const& textureFileName);
   // update uniform values
   void uploadUniforms();
   // upload projection matrix

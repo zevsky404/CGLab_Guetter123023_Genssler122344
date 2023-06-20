@@ -7,6 +7,8 @@
 #include "utils.hpp"
 #include "shader_loader.hpp"
 #include "model_loader.hpp"
+#include "texture_loader.hpp"
+
 
 // self-written classes
 #include "scene_graph.hpp"
@@ -23,6 +25,48 @@ using namespace gl;
 #pragma region CONSTANTS
     int STAR_COUNT = 1000;
     int LINE_SEGMENT_COUNT = 100;
+
+float SKYBOX_VERTICES[] = {
+        //   Coordinates
+        -1.0f, -1.0f,  1.0f,       //        7--------6
+        1.0f, -1.0f,  1.0f,        //       /|       /|
+        1.0f, -1.0f, -1.0f,        //      4--------5 |
+        -1.0f, -1.0f, -1.0f,     //      | |      | |
+        -1.0f,  1.0f,  1.0f,    //      | 3------|-2
+        1.0f,  1.0f,  1.0f,     //      |/       |/
+        1.0f,  1.0f, -1.0f,     //      0--------1
+        -1.0f,  1.0f, -1.0f
+};
+
+unsigned int SKYBOX_INDICES[] = {
+        // Right
+        1, 2, 6,
+        6, 5, 1,
+        // Left
+        0, 4, 7,
+        7, 3, 0,
+        // Top
+        4, 5, 6,
+        6, 7, 4,
+        // Bottom
+        0, 3, 2,
+        2, 1, 0,
+        // Back
+        0, 1, 5,
+        5, 4, 0,
+        // Front
+        3, 7, 6,
+        6, 2, 3
+};
+
+std::vector<std::string> SKYBOX_FACES = {
+        "skyboxes/skybox_lilac_orange/right.png",
+        "skyboxes/skybox_lilac_orange/left.png",
+        "skyboxes/skybox_lilac_orange/top.png",
+        "skyboxes/skybox_lilac_orange/bottom.png",
+        "skyboxes/skybox_lilac_orange/front.png",
+        "skyboxes/skybox_lilac_orange/back.png"
+};
 #pragma endregion
 
 
@@ -151,7 +195,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["ViewMatrix"] = -1;
     m_shaders.at("planet").u_locs["ProjectionMatrix"] = -1;
     m_shaders.at("planet").u_locs["PlanetColor"] = -1;
-    //m_shaders.at("planet").u_locs["AmbientColor"] = -1;
+    m_shaders.at("planet").u_locs["AmbientColor"] = -1;
     m_shaders.at("planet").u_locs["LightIntensity"] = -1;
     m_shaders.at("planet").u_locs["LightPosition"] = -1;
     m_shaders.at("planet").u_locs["LightColor"] = -1;
@@ -194,6 +238,7 @@ void ApplicationSolar::initializeGeometry() {
     initializePlanetGeometry();
     initializeOrbitGeometry();
     initializeEnterpriseGeometry();
+    initializeSkyboxGeometry();
 }
 # pragma region GEOMETRY INIT
 void ApplicationSolar::initializePlanetGeometry() {
@@ -344,6 +389,46 @@ void ApplicationSolar::initializeOrbitGeometry() {
     // set draw mode to GL_LINE_LOOP so lines are drawn between points and finally connect together again to a circle GLsizei(segment_points.size() / 3);
     orbit_object.draw_mode = GL_LINE_LOOP;
     orbit_object.num_elements = LINE_SEGMENT_COUNT;
+}
+
+void ApplicationSolar::initializeSkyboxGeometry() {
+    // Create VAO, VBO, and EBO for the skybox
+    unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glGenBuffers(1, &skyboxVBO);
+    glGenBuffers(1, &skyboxEBO);
+    glBindVertexArray(skyboxVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SKYBOX_VERTICES), &SKYBOX_VERTICES, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(SKYBOX_INDICES), &SKYBOX_INDICES, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)nullptr);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    // Cycles through all the textures and attaches them to the cubemap object
+    for (std::string const& file_name : SKYBOX_FACES) {
+        pixel_data pixelData = texture_loader::file(m_resource_path + file_name);
+        texture_object textureObject{};
+        glGenTextures(1, &textureObject.handle);
+        glBindTexture(GL_TEXTURE_2D, textureObject.handle);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, (int)pixelData.width, (int)pixelData.height,
+                     0, GL_RGB, GL_UNSIGNED_BYTE, pixelData.ptr());
+    }
+
+    // Creates the skybox texture object
+    unsigned int skybox_texture;
+    glGenTextures(1, &skybox_texture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
 #pragma endregion

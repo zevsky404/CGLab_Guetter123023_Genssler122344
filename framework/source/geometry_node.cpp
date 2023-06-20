@@ -53,8 +53,13 @@ void GeometryNode::renderPlanet(const std::map<std::string, shader_program> &m_s
     gl::glUniform3f(m_shaders.at("planet").u_locs.at("PlanetColor"),
                     color_.x, color_.y, color_.z);
 
-    //gl::glUniform3f(m_shaders.at("planet").u_locs.at("AmbientColor"),
-    //                color_.x, color_.y, color_.z);
+    if (name_ == "Planet-Sun-Geometry" || name_ == "Planet-Earth-Geometry") {
+        gl::glUniform3f(m_shaders.at("planet").u_locs.at("AmbientColor"),
+                        3.1415f, 3.1415f, 3.1415f);
+    } else {
+        gl::glUniform3f(m_shaders.at("planet").u_locs.at("AmbientColor"),
+                        1.0, 1.0, 1.0);
+    }
 
     // bind the VAO to draw
     gl::glBindVertexArray(geometry_.vertex_AO);
@@ -148,17 +153,9 @@ void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_sha
     }
 }
 
-void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_shaders,
-                              const glm::mat4 &m_view_transform, const texture_object &texture) {
-    // sorts out stars and orbit, as they need to be rendered differently from planets
-    if (name_.find("Planet") != std::string::npos) {
-        renderPlanet(m_shaders, m_view_transform);
-    } else if (name_ == "Star-Geometry") {
-        renderStars(m_shaders, m_view_transform);
-    }
-    else if (name_ == "Orbit") {
-        renderOrbit(m_shaders, m_view_transform);
-    } else if (name_ == "Enterprise-Geometry") {
-        renderEnterprise(m_shaders, m_view_transform);
-    }
+void GeometryNode::renderSkybox(const std::map<std::string, shader_program> &m_shaders,
+                                const glm::mat4 &m_view_transform) const {
+    glm::mat4 view_matrix = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
 }
+

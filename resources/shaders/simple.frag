@@ -1,7 +1,7 @@
 #version 150
 
 uniform vec3  PlanetColor;     // color of the planet
-// uniform vec3  AmbientColor;     color of the ambient light
+uniform vec3  AmbientColor;    //color of the ambient light
 uniform vec3  LightColor;      // color of the point light
 uniform float LightIntensity;  // intensity of the point light
 uniform vec3  LightPosition;   // position of the point light
@@ -38,7 +38,7 @@ void main() {
 
   TextureColor = texture(TextureSampler, pass_Coordinates).xyz;
   // caluclation of three different light components
-  vec3 Ambient = vec3(1.0, 1.0, 1.0) * TextureColor * 0.3;
+  vec3 Ambient = AmbientColor * TextureColor * 0.3;
   vec3 Diffuse = LightIntensity * LightColor * TextureColor * DiffuseFactor / Distance;
   vec3 Specular = LightIntensity * LightColor * SpecularCoefficient / Distance;
 
