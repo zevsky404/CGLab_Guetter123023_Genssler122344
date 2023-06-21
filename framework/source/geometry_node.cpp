@@ -124,8 +124,8 @@ void GeometryNode::renderEnterprise(const std::map<std::string, shader_program> 
     gl::glUniform3f(m_shaders.at("enterprise").u_locs.at("PlanetColor"),
                     1.0, 1.0, 1.0);
 
-    gl::glUniform3f(m_shaders.at("planet").u_locs.at("AmbientColor"),
-                    3.1415f, 3.1415f, 3.1415f);
+    gl::glUniform3f(m_shaders.at("enterprise").u_locs.at("AmbientColor"),
+                    0.5f, 0.5f, 0.5f);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture_.handle);

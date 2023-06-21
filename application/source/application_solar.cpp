@@ -123,6 +123,16 @@ void ApplicationSolar::render() const {
     gl::glUniform1f(m_shaders.at("planet").u_locs.at("LightIntensity"),
                     sun_light->getLightIntensity());
 
+    glUseProgram(m_shaders.at("enterprise").handle);
+    gl::glUniform3fv(m_shaders.at("enterprise").u_locs.at("LightColor"),
+                     1, glm::value_ptr(sun_light->getLightColour()));
+
+    gl::glUniform3fv(m_shaders.at("enterprise").u_locs.at("LightPosition"),
+                     1, glm::value_ptr(sun_light->getWorldTransform()[3]));
+
+    gl::glUniform1f(m_shaders.at("enterprise").u_locs.at("LightIntensity"),
+                    sun_light->getLightIntensity());
+
     sceneGraph.getRoot()->renderNode(m_shaders, m_view_transform);
 }
 
