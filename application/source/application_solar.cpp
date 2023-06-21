@@ -246,6 +246,7 @@ void ApplicationSolar::initializeShaderPrograms() {
 
     m_shaders.emplace("skybox", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/skybox.vert"},
                                                 {GL_FRAGMENT_SHADER, m_resource_path + "shaders/skybox.frag"}}});
+    m_shaders.at("skybox").u_locs["ModelMatrix"] = -1;
     m_shaders.at("skybox").u_locs["ProjectionMatrix"] = -1;
     m_shaders.at("skybox").u_locs["ViewMatrix"] = -1;
     m_shaders.at("skybox").u_locs["TextureSampler"] = -1;
@@ -424,9 +425,9 @@ void ApplicationSolar::initializeSkyboxGeometry() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skybox_object.element_BO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(SKYBOX_INDICES), &SKYBOX_INDICES, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    /*glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 
     skybox_object.draw_mode = GL_TRIANGLES;
     skybox_object.num_elements = (GLsizei) SKYBOX_INDICES.size();
