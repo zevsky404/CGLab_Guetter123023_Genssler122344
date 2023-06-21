@@ -6,18 +6,19 @@ uniform vec3  LightColor;      // color of the point light
 uniform float LightIntensity;  // intensity of the point light
 uniform vec3  LightPosition;   // position of the point light
 uniform bool  Cel;             // bool for activating cel shading
-uniform bool  NormalMap;       // bool for activating normal map
+//uniform bool  NormalMap;       // bool for activating normal map
 uniform sampler2D TextureSampler;
 
 const float Shininess = 10.0;  // specular exponent to determine shininess
 vec3 TextureColor;
+//bool NormalMap = false;
 
 in  vec4 pass_Position;
 in  vec3 pass_Normal;
 in  vec4 pass_Camera;
 in  vec2 pass_Coordinates;
 out vec4 out_Color;
-
+/*
 // Enable the GL_OES_standard_derivatives extension for derivative calculations
 #extension GL_OES_standard_derivatives : enable
 
@@ -47,14 +48,14 @@ vec3 perturbNormal( vec3 vertex_pos, vec3 surf_norm, vec2 uv) {
 
   // Apply the perturbation by transforming the remapped normal map to world space
   return normalize( tsn * mapN );
-}
+}*/
 
 void main() {
   vec3 Normal = normalize(pass_Normal);
 
-  if (NormalMap){
+  /*if (NormalMap){
     Normal = perturbNormal(pass_Position.xyz, pass_Normal, pass_Coordinates);
-  }
+  }*/
 
   vec3 LightDistance = LightPosition - pass_Position.xyz;                   // unnormalised distance between point light and geometry
 

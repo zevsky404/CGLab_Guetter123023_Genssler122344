@@ -25,7 +25,7 @@ struct texture_object {
   // handle of texture object
   GLuint handle = 0;
   // binding point
-  GLenum target = GL_TEXTURE_2D;
+  GLenum target = GL_ZERO;
 };
 
 // shader handle and uniform storage

@@ -147,7 +147,7 @@ void ApplicationSolar::uploadView() {
     glUniformMatrix4fv(m_shaders.at("enterprise").u_locs.at("ViewMatrix"), 1,
                        GL_FALSE, glm::value_ptr(view_matrix));
 
-    glUseProgram(m_shaders.at("skybox").handle);
+   glUseProgram(m_shaders.at("skybox").handle);
     glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ViewMatrix"), 1,
                        GL_FALSE, glm::value_ptr(view_matrix));
 }
@@ -203,7 +203,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["Cel"] = -1;
     m_shaders.at("planet").u_locs["CameraPosition"] = -1;
     m_shaders.at("planet").u_locs["TextureSampler"] = -1;
-    m_shaders.at("planet").u_locs["NormalMap"] = -1;
+    //m_shaders.at("planet").u_locs["NormalMap"] = -1;
 
     m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/orbit.vert"},
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
@@ -232,7 +232,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("enterprise").u_locs["Cel"] = -1;
     m_shaders.at("enterprise").u_locs["CameraPosition"] = -1;
     m_shaders.at("enterprise").u_locs["TextureSampler"] = -1;
-    m_shaders.at("enterprise").u_locs["NormalMap"] = -1;
+    //m_shaders.at("enterprise").u_locs["NormalMap"] = -1;
 
     m_shaders.emplace("skybox", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/skybox.vert"},
                                                 {GL_FRAGMENT_SHADER, m_resource_path + "shaders/skybox.frag"}}});
@@ -244,11 +244,11 @@ void ApplicationSolar::initializeShaderPrograms() {
 
 // initialise all geometries
 void ApplicationSolar::initializeGeometry() {
-    initializeStarGeometry();
-    initializePlanetGeometry();
-    initializeOrbitGeometry();
-    initializeEnterpriseGeometry();
     initializeSkyboxGeometry();
+    initializeStarGeometry();
+    initializeOrbitGeometry();
+    initializePlanetGeometry();
+    initializeEnterpriseGeometry();
 }
 # pragma region GEOMETRY INIT
 void ApplicationSolar::initializePlanetGeometry() {
@@ -390,7 +390,6 @@ void ApplicationSolar::initializeOrbitGeometry() {
 
     glGenBuffers(1, &orbit_object.element_BO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, orbit_object.element_BO);
-
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                  GLsizei(sizeof(float) * segment_points.size()), segment_points.data(),
                  GL_STATIC_DRAW);
