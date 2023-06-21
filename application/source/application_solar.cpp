@@ -158,7 +158,7 @@ void ApplicationSolar::uploadView() {
                        GL_FALSE, glm::value_ptr(view_matrix));
 
    glUseProgram(m_shaders.at("skybox").handle);
-    glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ViewMatrix"), 1,
+   glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ViewMatrix"), 1,
                        GL_FALSE, glm::value_ptr(view_matrix));
 }
 
@@ -255,8 +255,8 @@ void ApplicationSolar::initializeShaderPrograms() {
 
 // initialise all geometries
 void ApplicationSolar::initializeGeometry() {
-    initializeSkyboxGeometry();
     initializeStarGeometry();
+    initializeSkyboxGeometry();
     initializeOrbitGeometry();
     initializePlanetGeometry();
     initializeEnterpriseGeometry();
@@ -411,11 +411,11 @@ void ApplicationSolar::initializeOrbitGeometry() {
 }
 
 void ApplicationSolar::initializeSkyboxGeometry() {
-    glGenVertexArrays(1, &orbit_object.vertex_AO);
-    glBindVertexArray(orbit_object.vertex_AO);
+    glGenVertexArrays(1, &skybox_object.vertex_AO);
+    glBindVertexArray(skybox_object.vertex_AO);
 
-    glGenBuffers(1, &orbit_object.vertex_BO);
-    glBindBuffer(GL_ARRAY_BUFFER, orbit_object.vertex_BO);
+    glGenBuffers(1, &skybox_object.vertex_BO);
+    glBindBuffer(GL_ARRAY_BUFFER, skybox_object.vertex_BO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(SKYBOX_VERTICES), &SKYBOX_VERTICES, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
@@ -430,7 +430,7 @@ void ApplicationSolar::initializeSkyboxGeometry() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);*/
 
     skybox_object.draw_mode = GL_TRIANGLES;
-    skybox_object.num_elements = (GLsizei) SKYBOX_INDICES.size();
+    skybox_object.num_elements = (GLsizei) SKYBOX_VERTICES.size();
 }
 
 #pragma endregion
