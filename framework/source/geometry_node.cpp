@@ -177,7 +177,5 @@ void GeometryNode::renderSkybox(const std::map<std::string, shader_program> &m_s
     // draw bound vertex array using bound shader
     glDrawElements(geometry_.draw_mode, geometry_.num_elements, model::INDEX.type, nullptr);
     glDepthFunc(GL_LESS);
-
-
 }
 

@@ -23,7 +23,7 @@ class ApplicationSolar : public Application {
   void resizeCallback(unsigned width, unsigned height);
 
   // draw all objects
-  void render() const;
+  void render();
 
  protected:
   void initializeShaderPrograms();
@@ -33,7 +33,17 @@ class ApplicationSolar : public Application {
   void initializeOrbitGeometry();
   void initializeSkyboxGeometry();
   void initializeGeometry();
-  //texture_object initializeTextures(std::string const& textureFileName);
+  void initializeFrameBuffer();
+  void updateBuffer(int width, int height);
+  void renderFrameBuffer();
+  void createBufferTexture(
+          GLuint texture,
+          int width,
+          int height,
+          GLenum target,
+          GLenum format,
+          GLenum attachment
+          );
   // update uniform values
   void uploadUniforms();
   // upload projection matrix
@@ -41,12 +51,17 @@ class ApplicationSolar : public Application {
   // upload view matrix
   void uploadView();
 
+  unsigned int post_process_fbo;
+  unsigned int color_texture;
+  unsigned int depth_texture;
+
   // cpu representation of model
   model_object planet_object;
   model_object enterprise_object;
   model_object star_object;
   model_object orbit_object;
   model_object skybox_object;
+  model_object screen_quad_object;
 
   // camera transform matrix
   glm::fmat4 m_view_transform;
