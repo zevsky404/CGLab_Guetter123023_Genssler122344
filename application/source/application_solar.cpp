@@ -545,6 +545,9 @@ void ApplicationSolar::renderFrameBuffer() {
     // Disable depth testing to ensure the quad is rendered on top of everything
     glDisable(GL_DEPTH_TEST);
 
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     // Use the shader program for rendering the screen quad
     glUseProgram(m_shaders.at("screen-quad").handle);
 
@@ -569,13 +572,13 @@ void ApplicationSolar::createBufferTexture(GLuint texture, int width, int height
     glBindTexture(target, texture);
 
     // Check if the target is GL_TEXTURE_2D_MULTISAMPLE
-    if (target == GL_TEXTURE_2D_MULTISAMPLE) {
+    /*if (target == GL_TEXTURE_2D_MULTISAMPLE) {
         // If it is a multisample texture, allocate storage for it
         glTexImage2DMultisample(target, 8, format, width, height, GL_TRUE);
-    } else {
+    } else {*/
         // If it is a regular texture, allocate storage for it
-        glTexImage2D(target, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
-    }
+    glTexImage2D(target, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
+    //}
 
     // Set texture filtering parameters for minification and magnification to GL_NEAREST
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

@@ -105,9 +105,9 @@ SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_obj
     //set root of scene graph
     sceneGraph.setRoot(root);
 
-    auto skybox_geometry = std::make_shared<GeometryNode>(root, "Skybox", model_objects.at("skybox-object"));
-    skybox_geometry->setTexture(setupSkybox(resource_path + SKYBOX_VARIANTS[3]));
-    root->addChild(skybox_geometry);
+    //auto skybox_geometry = std::make_shared<GeometryNode>(root, "Skybox", model_objects.at("skybox-object"));
+    //skybox_geometry->setTexture(setupSkybox(resource_path + SKYBOX_VARIANTS[3]));
+    //root->addChild(skybox_geometry);
 
     //initialize sun as a point light
     auto sun_light_node = std::make_shared<PointLightNode>(root,"Planet-Sun-Holder",glm::vec3{1.0f,1.0f,1.0f},4.0f);
