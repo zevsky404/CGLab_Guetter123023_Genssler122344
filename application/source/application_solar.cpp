@@ -136,8 +136,9 @@ void ApplicationSolar::render() {
     gl::glUniform1f(m_shaders.at("enterprise").u_locs.at("LightIntensity"),
                     sun_light->getLightIntensity());
 
-    sceneGraph.getRoot()->renderNode(m_shaders, m_view_transform);
     renderFrameBuffer();
+    sceneGraph.getRoot()->renderNode(m_shaders, m_view_transform);
+
 }
 
 void ApplicationSolar::uploadView() {
@@ -164,6 +165,10 @@ void ApplicationSolar::uploadView() {
    glUseProgram(m_shaders.at("skybox").handle);
    glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ViewMatrix"), 1,
                        GL_FALSE, glm::value_ptr(view_matrix));
+
+    glUseProgram(m_shaders.at("screen-quad").handle);
+    glUniformMatrix4fv(m_shaders.at("screen-quad").u_locs.at("ViewMatrix"), 1,
+                       GL_FALSE, glm::value_ptr(view_matrix));
 }
 
 void ApplicationSolar::uploadProjection() {
@@ -189,6 +194,11 @@ void ApplicationSolar::uploadProjection() {
     glUseProgram(m_shaders.at("skybox").handle);
     glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ProjectionMatrix"),
                        1, GL_FALSE, glm::value_ptr(m_view_projection));
+
+    glUseProgram(m_shaders.at("screen-quad").handle);
+    glUniformMatrix4fv(m_shaders.at("screen-quad").u_locs.at("ProjectionMatrix"),
+                       1, GL_FALSE, glm::value_ptr(m_view_projection));
+
 }
 
 // update uniform locations
@@ -256,7 +266,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("skybox").u_locs["TextureSampler"] = -1;
 
     m_shaders.emplace("screen-quad", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/quad.vert"},
-                                                     {GL_FRAGMENT_SHADER, m_resource_path + "shader/quad.frag"}}});
+                                                     {GL_FRAGMENT_SHADER, m_resource_path + "shaders/quad.frag"}}});
 
     m_shaders.at("screen-quad").u_locs["ViewMatrix"] = -1;
     m_shaders.at("screen-quad").u_locs["ProjectionMatrix"] = -1;
