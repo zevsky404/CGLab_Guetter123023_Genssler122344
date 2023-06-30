@@ -68,6 +68,7 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,star_object{}
  ,orbit_object{}
  ,skybox_object{}
+ ,skybox_texture{setupSkybox(m_resource_path + "skyboxes/skybox_lilac_orange/")}
  ,post_process_fbo{}
  ,color_texture{}
  ,depth_texture{}
@@ -93,6 +94,8 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
 
     // create graph hierarchy
     sceneGraph = setupSolarSystem(model_objects, resource_path);
+
+    std::cout << initial_resolution[0] << ", " << initial_resolution[1] << std::endl;
 }
 
 ApplicationSolar::~ApplicationSolar() {
@@ -139,10 +142,14 @@ void ApplicationSolar::render() {
     gl::glUniform1f(m_shaders.at("enterprise").u_locs.at("LightIntensity"),
                     sun_light->getLightIntensity());
 
-    renderFrameBuffer();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, post_process_fbo);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //renderSkybox();
     sceneGraph.getRoot()->renderNode(m_shaders, m_view_transform);
-
-
+    renderFrameBuffer();
 }
 
 void ApplicationSolar::uploadView() {
@@ -505,7 +512,7 @@ void ApplicationSolar::initializeFrameBuffer() {
     glGenTextures(1, &depth_texture);
 
     // Update the buffer with initial resolution
-    updateBuffer(initial_resolution[0], initial_resolution[1]);
+                                                                                                                                            updateBuffer(initial_resolution[0], initial_resolution[1]);
 
     // Define vertex data for a rectangular quad
     float rectVertices[] = {
@@ -542,15 +549,37 @@ void ApplicationSolar::initializeFrameBuffer() {
 }
 #pragma endregion
 
+void ApplicationSolar::renderSkybox() {
+    //glDisable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    //glCullFace(GL_FRONT);
+    glUseProgram(m_shaders.at("skybox").handle);
+
+    /*glm::fmat4 model_matrix = getWorldTransform() * getLocalTransform();
+    glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ModelMatrix"),
+                       1, GL_FALSE, glm::value_ptr(model_matrix));*/
+
+    glUniform1i(m_shaders.at("skybox").u_locs.at("TextureSampler"), 0);
+
+    //texture_object skybox_texture = setupSkybox(m_resource_path + "skyboxes/skybox_lilac_orange/");
+
+
+    // bind the VAO to draw
+    gl::glBindVertexArray(skybox_object.vertex_AO);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox_texture.handle);
+    // draw bound vertex array using bound shader
+    glDrawElements(skybox_object.draw_mode, skybox_object.num_elements, model::INDEX.type, nullptr);
+    glDepthFunc(GL_LESS);
+}
+
 void ApplicationSolar::renderFrameBuffer() {
+    // Disable depth testing to ensure the quad is rendered on top of everything
+    glDisable(GL_DEPTH_TEST);
     // Bind the default framebuffer (screen) for rendering
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    // Disable depth testing to ensure the quad is rendered on top of everything
-    glDisable(GL_DEPTH_TEST);
-
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    //
 
     // Use the shader program for rendering the screen quad
     glUseProgram(m_shaders.at("screen-quad").handle);
@@ -607,6 +636,7 @@ void ApplicationSolar::updateBuffer(int width, int height) {
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         std::cout << "Error occurred in frame buffer: " << status << std::endl;
     }
+
 }
 
 ///////////////////////////// callback functions for window events ////////////

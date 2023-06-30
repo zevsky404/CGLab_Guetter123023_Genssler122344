@@ -28,5 +28,6 @@ public:
 };
 
 SceneGraph setupSolarSystem(std::map<std::string, model_object> const& model_objects, std::string const& resource_path);
+texture_object setupSkybox(std::string const& variant);
 
 #endif //OPENGL_FRAMEWORK_SCENE_GRAPH_HPP

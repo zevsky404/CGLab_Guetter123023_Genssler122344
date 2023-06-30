@@ -152,30 +152,8 @@ void GeometryNode::renderNode(const std::map<std::string, shader_program> &m_sha
     } else if (name_ == "Enterprise-Geometry") {
         //std::cout << "rendering enterprise \n";
         renderEnterprise(m_shaders, m_view_transform);
-    } else if (name_ == "Skybox") {
-        //std::cout << "rendering skybox \n";
-        renderSkybox(m_shaders, m_view_transform);
     }
 }
 
-void GeometryNode::renderSkybox(const std::map<std::string, shader_program> &m_shaders,
-                                const glm::mat4 &m_view_transform) const {
-    glDepthFunc(GL_LEQUAL);
-    glCullFace(GL_FRONT);
-    glUseProgram(m_shaders.at("skybox").handle);
 
-    glm::fmat4 model_matrix = getWorldTransform() * getLocalTransform();
-    glUniformMatrix4fv(m_shaders.at("skybox").u_locs.at("ModelMatrix"),
-                       1, GL_FALSE, glm::value_ptr(model_matrix));
-
-    glUniform1i(m_shaders.at("skybox").u_locs.at("TextureSampler"), 0);
-
-    // bind the VAO to draw
-    gl::glBindVertexArray(geometry_.vertex_AO);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, texture_.handle);
-    // draw bound vertex array using bound shader
-    glDrawElements(geometry_.draw_mode, geometry_.num_elements, model::INDEX.type, nullptr);
-    glDepthFunc(GL_LESS);
-}
 
