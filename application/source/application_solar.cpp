@@ -68,6 +68,9 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,star_object{}
  ,orbit_object{}
  ,skybox_object{}
+ ,post_process_fbo{}
+ ,color_texture{}
+ ,depth_texture{}
  ,screen_quad_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
@@ -138,6 +141,7 @@ void ApplicationSolar::render() {
 
     renderFrameBuffer();
     sceneGraph.getRoot()->renderNode(m_shaders, m_view_transform);
+
 
 }
 
@@ -564,6 +568,8 @@ void ApplicationSolar::renderFrameBuffer() {
 
     // Draw the screen quad using the specified draw mode, vertex count, and attributes
     glDrawArrays(screen_quad_object.draw_mode, 0, screen_quad_object.num_elements);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void ApplicationSolar::createBufferTexture(GLuint texture, int width, int height, GLenum target, GLenum format,
