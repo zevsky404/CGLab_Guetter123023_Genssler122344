@@ -57,6 +57,11 @@ std::vector<GLint> SKYBOX_INDICES = {
         3, 7, 6,
         6, 2, 3
 };
+bool greyscale = false;
+bool blur = false;
+bool vertical = false;
+bool horizontal = false;
+bool chromatic_aberration = false;
 
 #pragma endregion
 
@@ -235,7 +240,6 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["LightIntensity"] = -1;
     m_shaders.at("planet").u_locs["LightPosition"] = -1;
     m_shaders.at("planet").u_locs["LightColor"] = -1;
-    m_shaders.at("planet").u_locs["Cel"] = -1;
     m_shaders.at("planet").u_locs["CameraPosition"] = -1;
     m_shaders.at("planet").u_locs["TextureSampler"] = -1;
     //m_shaders.at("planet").u_locs["NormalMap"] = -1;
@@ -264,7 +268,6 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("enterprise").u_locs["LightIntensity"] = -1;
     m_shaders.at("enterprise").u_locs["LightPosition"] = -1;
     m_shaders.at("enterprise").u_locs["LightColor"] = -1;
-    m_shaders.at("enterprise").u_locs["Cel"] = -1;
     m_shaders.at("enterprise").u_locs["CameraPosition"] = -1;
     m_shaders.at("enterprise").u_locs["TextureSampler"] = -1;
     //m_shaders.at("enterprise").u_locs["NormalMap"] = -1;
@@ -283,6 +286,11 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("screen-quad").u_locs["ProjectionMatrix"] = -1;
     m_shaders.at("screen-quad").u_locs["ColorTexture"] = -1;
     m_shaders.at("screen-quad").u_locs["DepthTexture"] = -1;
+    m_shaders.at("screen-quad").u_locs["Greyscale"] = -1;
+    m_shaders.at("screen-quad").u_locs["Horizontal"] = -1;
+    m_shaders.at("screen-quad").u_locs["Vertical"] = -1;
+    m_shaders.at("screen-quad").u_locs["Blur"] = -1;
+    m_shaders.at("screen-quad").u_locs["ChromaticAberration"] = -1;
 }
 
 // initialise all geometries
@@ -512,7 +520,7 @@ void ApplicationSolar::initializeFrameBuffer() {
     glGenTextures(1, &depth_texture);
 
     // Update the buffer with initial resolution
-                                                                                                                                            updateBuffer(initial_resolution[0], initial_resolution[1]);
+    updateBuffer(initial_resolution[0], initial_resolution[1]);
 
     // Define vertex data for a rectangular quad
     float rectVertices[] = {
@@ -579,8 +587,6 @@ void ApplicationSolar::renderFrameBuffer() {
     // Bind the default framebuffer (screen) for rendering
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-    //
-
     // Use the shader program for rendering the screen quad
     glUseProgram(m_shaders.at("screen-quad").handle);
 
@@ -642,6 +648,8 @@ void ApplicationSolar::updateBuffer(int width, int height) {
 ///////////////////////////// callback functions for window events ////////////
 // handle key input
 void ApplicationSolar::keyCallback(int key, int action, int mods) {
+
+
     //moving forward
     if (key == GLFW_KEY_W  && (action == GLFW_PRESS || action == GLFW_REPEAT)) {
     m_view_transform = glm::translate(m_view_transform, glm::fvec3{0.0f, 0.0f, -0.07f});
@@ -673,14 +681,34 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
       uploadView();
     }
 
-    // switch between cel shading and blinn phong illumination
     else if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
-        glUseProgram(m_shaders.at("planet").handle);
-        glUniform1i(m_shaders.at("planet").u_locs.at("Cel"), false);
+        greyscale = !greyscale;
+        glUseProgram(m_shaders.at("screen-quad").handle);
+        glUniform1i(m_shaders.at("screen-quad").u_locs.at("Greyscale"), greyscale);
     }
+
     else if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
-        glUseProgram(m_shaders.at("planet").handle);
-        glUniform1i(m_shaders.at("planet").u_locs.at("Cel"), true);
+        horizontal = !horizontal;
+        glUseProgram(m_shaders.at("screen-quad").handle);
+        glUniform1i(m_shaders.at("screen-quad").u_locs.at("Horizontal"), horizontal);
+    }
+
+    else if (key == GLFW_KEY_3 && action == GLFW_PRESS) {
+        vertical = !vertical;
+        glUseProgram(m_shaders.at("screen-quad").handle);
+        glUniform1i(m_shaders.at("screen-quad").u_locs.at("Vertical"), vertical);
+    }
+
+    else if (key == GLFW_KEY_4 && action == GLFW_PRESS) {
+        blur = !blur;
+        glUseProgram(m_shaders.at("screen-quad").handle);
+        glUniform1i(m_shaders.at("screen-quad").u_locs.at("Blur"), blur);
+    }
+
+    else if (key == GLFW_KEY_5 && action == GLFW_PRESS) {
+        chromatic_aberration = !chromatic_aberration;
+        glUseProgram(m_shaders.at("screen-quad").handle);
+        glUniform1i(m_shaders.at("screen-quad").u_locs.at("ChromaticAberration"), chromatic_aberration);
     }
 }
 

@@ -7,6 +7,12 @@ in vec2 pass_Coordinates;
 uniform sampler2D ColorTexture;
 uniform sampler2D DepthTexture;
 
+uniform bool Greyscale;
+uniform bool Blur;
+uniform bool Vertical;
+uniform bool Horizontal;
+uniform bool ChromaticAberration;
+
 out vec4 out_Color;
 
 vec2 resolution = vec2(640, 480);
@@ -59,8 +65,22 @@ vec4 computeChromaticAberration() {
 }
 
 void main() {
-    vec2 uv = pass_Coordinates;
-    //out_Color = computeBlur(uv, gaussian_blur);
-    out_Color = computeChromaticAberration();
-    //out_Color = texture(ColorTexture, pass_Coordinates);
+    if (Blur == true) {
+        vec2 uv = pass_Coordinates;
+        out_Color = computeBlur(uv, gaussian_blur);
+    }
+    else if (Vertical == true) {
+        out_Color = flipVertically();
+    }
+    else if (Horizontal == true) {
+        out_Color = flipHorizontally();
+    }
+    else if (ChromaticAberration == true){
+        out_Color = computeChromaticAberration();
+    }
+    else if (Greyscale == true){
+        out_Color = computeGreyscale();
+    }
+
+    out_Color = texture(ColorTexture, pass_Coordinates);
 }
