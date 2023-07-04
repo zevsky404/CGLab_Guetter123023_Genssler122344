@@ -73,11 +73,11 @@ ApplicationSolar::ApplicationSolar(std::string const& resource_path)
  ,star_object{}
  ,orbit_object{}
  ,skybox_object{}
- ,skybox_texture{setupSkybox(m_resource_path + "skyboxes/skybox_lilac_orange/")}
+ //,skybox_texture{setupSkybox(m_resource_path + "skyboxes/skybox_lilac_orange/")}
+ ,screen_quad_object{}
  ,post_process_fbo{}
  ,color_texture{}
  ,depth_texture{}
- ,screen_quad_object{}
  ,m_view_transform{glm::translate(glm::fmat4{}, glm::fvec3{0.0f, 0.0f, 4.0f})}
  ,m_view_projection{utils::calculate_projection_matrix(initial_aspect_ratio)}
  ,sceneGraph{}
@@ -242,7 +242,7 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("planet").u_locs["LightColor"] = -1;
     m_shaders.at("planet").u_locs["CameraPosition"] = -1;
     m_shaders.at("planet").u_locs["TextureSampler"] = -1;
-    //m_shaders.at("planet").u_locs["NormalMap"] = -1;
+    m_shaders.at("planet").u_locs["Cel"] = -1;
 
     m_shaders.emplace("orbit", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/orbit.vert"},
                                             {GL_FRAGMENT_SHADER, m_resource_path + "shaders/orbit.frag"}}});
@@ -270,7 +270,6 @@ void ApplicationSolar::initializeShaderPrograms() {
     m_shaders.at("enterprise").u_locs["LightColor"] = -1;
     m_shaders.at("enterprise").u_locs["CameraPosition"] = -1;
     m_shaders.at("enterprise").u_locs["TextureSampler"] = -1;
-    //m_shaders.at("enterprise").u_locs["NormalMap"] = -1;
 
     m_shaders.emplace("skybox", shader_program{{{GL_VERTEX_SHADER, m_resource_path + "shaders/skybox.vert"},
                                                 {GL_FRAGMENT_SHADER, m_resource_path + "shaders/skybox.frag"}}});
@@ -520,11 +519,17 @@ void ApplicationSolar::initializeFrameBuffer() {
     glGenTextures(1, &depth_texture);
 
     // Update the buffer with initial resolution
-    updateBuffer(initial_resolution[0], initial_resolution[1]);
+    glBindFramebuffer(GL_FRAMEBUFFER, post_process_fbo);
+    createBufferTexture(color_texture, (int)initial_resolution[0], (int)initial_resolution[1], GL_TEXTURE_2D, GL_RGB, GL_COLOR_ATTACHMENT0);
+    createBufferTexture(depth_texture, (int)initial_resolution[0], (int)initial_resolution[1], GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT);
+
+    auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
+        std::cout << "Error occurred in frame buffer: " << status << std::endl;
+    }
 
     // Define vertex data for a rectangular quad
-    float rectVertices[] = {
-            // Coordinates    // Texture coordinates
+    float vertices[] = {
             1.f, -1.f, 1.f, 0.f,   // Top right
             -1.f, -1.f, 0.f, 0.f,  // Top left
             -1.f, 1.f, 0.f, 1.f,   // Bottom left
@@ -541,7 +546,7 @@ void ApplicationSolar::initializeFrameBuffer() {
     glBindBuffer(GL_ARRAY_BUFFER, screen_quad_object.vertex_BO);
 
     // Provide the vertex data to the GPU
-    glBufferData(GL_ARRAY_BUFFER, sizeof(rectVertices), &rectVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
 
     // Enable and specify the layout of vertex attribute 0 (coordinates)
     glEnableVertexAttribArray(0);
@@ -613,13 +618,7 @@ void ApplicationSolar::createBufferTexture(GLuint texture, int width, int height
     glBindTexture(target, texture);
 
     // Check if the target is GL_TEXTURE_2D_MULTISAMPLE
-    /*if (target == GL_TEXTURE_2D_MULTISAMPLE) {
-        // If it is a multisample texture, allocate storage for it
-        glTexImage2DMultisample(target, 8, format, width, height, GL_TRUE);
-    } else {*/
-        // If it is a regular texture, allocate storage for it
     glTexImage2D(target, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
-    //}
 
     // Set texture filtering parameters for minification and magnification to GL_NEAREST
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -631,18 +630,6 @@ void ApplicationSolar::createBufferTexture(GLuint texture, int width, int height
 
     // Attach the texture to the specified attachment point of the frame buffer
     glFramebufferTexture2D(GL_FRAMEBUFFER, attachment, target, texture, 0);
-}
-
-void ApplicationSolar::updateBuffer(int width, int height) {
-    glBindFramebuffer(GL_FRAMEBUFFER, post_process_fbo);
-    createBufferTexture(color_texture, width, height, GL_TEXTURE_2D, GL_RGB, GL_COLOR_ATTACHMENT0);
-    createBufferTexture(depth_texture, width, height, GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_ATTACHMENT);
-
-    auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE) {
-        std::cout << "Error occurred in frame buffer: " << status << std::endl;
-    }
-
 }
 
 ///////////////////////////// callback functions for window events ////////////
@@ -682,30 +669,39 @@ void ApplicationSolar::keyCallback(int key, int action, int mods) {
     }
 
     else if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
+        glUseProgram(m_shaders.at("planet").handle);
+        glUniform1i(m_shaders.at("planet").u_locs.at("Cel"), false);
+    }
+    else if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
+        glUseProgram(m_shaders.at("planet").handle);
+        glUniform1i(m_shaders.at("planet").u_locs.at("Cel"), true);
+    }
+
+    else if (key == GLFW_KEY_3 && action == GLFW_PRESS) {
         greyscale = !greyscale;
         glUseProgram(m_shaders.at("screen-quad").handle);
         glUniform1i(m_shaders.at("screen-quad").u_locs.at("Greyscale"), greyscale);
     }
 
-    else if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
+    else if (key == GLFW_KEY_4 && action == GLFW_PRESS) {
         horizontal = !horizontal;
         glUseProgram(m_shaders.at("screen-quad").handle);
         glUniform1i(m_shaders.at("screen-quad").u_locs.at("Horizontal"), horizontal);
     }
 
-    else if (key == GLFW_KEY_3 && action == GLFW_PRESS) {
+    else if (key == GLFW_KEY_5 && action == GLFW_PRESS) {
         vertical = !vertical;
         glUseProgram(m_shaders.at("screen-quad").handle);
         glUniform1i(m_shaders.at("screen-quad").u_locs.at("Vertical"), vertical);
     }
 
-    else if (key == GLFW_KEY_4 && action == GLFW_PRESS) {
+    else if (key == GLFW_KEY_6 && action == GLFW_PRESS) {
         blur = !blur;
         glUseProgram(m_shaders.at("screen-quad").handle);
         glUniform1i(m_shaders.at("screen-quad").u_locs.at("Blur"), blur);
     }
 
-    else if (key == GLFW_KEY_5 && action == GLFW_PRESS) {
+    else if (key == GLFW_KEY_7 && action == GLFW_PRESS) {
         chromatic_aberration = !chromatic_aberration;
         glUseProgram(m_shaders.at("screen-quad").handle);
         glUniform1i(m_shaders.at("screen-quad").u_locs.at("ChromaticAberration"), chromatic_aberration);

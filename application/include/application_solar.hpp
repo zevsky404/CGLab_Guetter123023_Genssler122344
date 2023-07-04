@@ -35,9 +35,8 @@ class ApplicationSolar : public Application {
   void initializeGeometry();
   void renderSkybox();
   void initializeFrameBuffer();
-  void updateBuffer(int width, int height);
   void renderFrameBuffer();
-  void createBufferTexture(
+  static void createBufferTexture(
           GLuint texture,
           int width,
           int height,
